@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Вайбик — мне тревожно</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=3">
+    <link rel="shortcut icon" href="/favicon.png?v=3">
+    <link rel="apple-touch-icon" href="/favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        :root { --bg: #F2EFE9; --text: #4A3729; --text-muted: #7A5E4A; --card-bg: #FFFFFF; --card-border: #E2D4C8; --btn-bg: #FFFFFF; --btn-active: #DBC8B5; --btn-text: #4A3729; --accent: #A87B5A; --footer-bg: rgba(255, 250, 240, 0.7); --slider-bg: #DCCCB9; --slider-thumb: #B5875A; --muted: #7A5E4A; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.08); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.1); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.12); --circle-bg: rgba(168, 123, 90, 0.35); }
+        body.dark { --bg: #2A241E; --text: #F0E2D4; --text-muted: #C5B19B; --card-bg: #3D3228; --card-border: #5E4E3E; --btn-bg: #3D3228; --btn-active: #5E4B38; --btn-text: #E0D4C8; --accent: #C9A87C; --footer-bg: rgba(30, 25, 22, 0.8); --slider-bg: #5E4E3E; --slider-thumb: #C9A87C; --muted: #C5B19B; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.3); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.4); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.5); --circle-bg: rgba(201, 168, 124, 0.35); }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); padding: 1.5rem 1.5rem 0; min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; position: relative; }
+        body::before { content: ""; position: fixed; top: -20%; left: -20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(180, 140, 100, 0.08), transparent 70%); border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none; }
+        body.dark::before { background: radial-gradient(circle, rgba(100, 80, 60, 0.15), transparent 70%); }
+        .container { max-width: 1200px; margin: 0 auto; flex: 1; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .theme-switch { position: fixed; top: 1.5rem; right: 1.5rem; background: var(--btn-bg); border: 1px solid var(--card-border); font-size: 0.8rem; font-weight: 500; color: var(--muted); cursor: pointer; z-index: 100; transition: 0.2s; font-family: 'Quicksand', sans-serif; padding: 6px 14px; border-radius: 30px; backdrop-filter: blur(4px); box-shadow: var(--shadow-sm); }
+        .theme-switch:hover { color: var(--text); background: var(--btn-active); transform: translateY(-2px); }
+        
+        .logo-link { text-decoration: none; display: block; margin-bottom: 0.8rem; }
+        .logo-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 0.15rem; flex-wrap: wrap; }
+        .cloud-letter { display: inline-block; font-size: 4rem; font-weight: 600; background: linear-gradient(135deg, #E6D0B5, #B5875A); background-clip: text; -webkit-background-clip: text; color: transparent; margin: 0; padding: 0; transition: all 0.2s ease; animation: float 3s infinite ease-in-out; text-shadow: 0 0 12px rgba(139, 90, 43, 0.2), 0 0 20px rgba(139, 90, 43, 0.1); filter: blur(0.3px); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        .cloud-letter:hover { transform: translateY(-8px); filter: blur(0px); text-shadow: 0 0 18px rgba(139, 90, 43, 0.3); }
+        @media (max-width: 650px) { .cloud-letter { font-size: 2.4rem; } .logo-wrapper { gap: 0.1rem; } }
+        .tagline { text-align: center; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 4px; margin-bottom: 1.5rem; }
+        h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); letter-spacing: -0.5px; text-align: center; }
+        .sub { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem; text-align: center; }
+        .phrase { font-size: 1.8rem; font-weight: 400; color: var(--text); text-align: center; margin-bottom: 1.5rem; line-height: 1.4; max-width: 800px; opacity: 0; animation: fadeInUp 0.8s forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .breathing-wrapper { position: relative; width: 280px; height: 280px; margin: 1rem auto; }
+        .breathing-circle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--circle-bg); border-radius: 50%; transition: transform 4s ease-in-out, opacity 0.4s ease; box-shadow: 0 0 30px rgba(0,0,0,0.1); backdrop-filter: blur(2px); transform: scale(0.6); opacity: 0.3; }
+        .breathing-circle.inhale { transform: scale(1); opacity: 0.9; }
+        .breathing-circle.exhale { transform: scale(0.6); opacity: 0.3; }
+        .breathing-controls { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; gap: 0.6rem; align-items: center; z-index: 5; }
+        .breathing-btn { background: var(--btn-bg); border: 1px solid var(--card-border); font-family: 'Quicksand', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--btn-text); cursor: pointer; padding: 0.5rem 1.2rem; border-radius: 40px; transition: 0.2s; width: 110px; text-align: center; box-shadow: var(--shadow-sm); }
+        .breathing-btn:hover { background: var(--btn-active); transform: translateY(-2px); }
+        .breathing-status { font-size: 0.85rem; color: var(--accent); text-align: center; margin-top: 0.8rem; font-weight: 500; }
+        .breathing-instruction { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem; max-width: 300px; margin-left: auto; margin-right: auto; }
+        
+        .content-selection { margin: 2rem auto; background: var(--footer-bg); backdrop-filter: blur(8px); border-radius: 2rem; padding: 1.5rem; border: 1px solid var(--card-border); max-width: 600px; }
+        .selection-title { font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 1rem; text-align: center; }
+        .selection-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; }
+        .selection-card { background: var(--card-bg); border-radius: 1.5rem; padding: 0.4rem 0.8rem; text-align: center; transition: 0.2s; border: 1px solid var(--card-border); text-decoration: none; color: var(--text); min-width: 70px; }
+        .selection-card:hover { transform: translateY(-2px); background: var(--btn-active); box-shadow: var(--shadow-sm); }
+        .selection-label { font-weight: 600; font-size: 0.8rem; }
+        
+        .help-link { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background-color: var(--accent); border: none; color: white; padding: 0.4rem 1rem; border-radius: 40px; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: 0.2s; z-index: 100; white-space: nowrap; box-shadow: var(--shadow-sm); text-decoration: none; }
+        .help-link:hover { background-color: #8C644A; transform: translateX(-50%) scale(1.02); }
+        .back-link { display: inline-block; margin-top: 1rem; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; border-bottom: 1px dashed var(--card-border); }
+        .back-link:hover { color: var(--accent); }
+        
+        .floating-mixer-btn { position: fixed; bottom: 2rem; right: 2rem; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s, background 0.2s; z-index: 200; }
+        .floating-mixer-btn:hover { transform: scale(1.05); background: #8C644A; }
+        body.dark .floating-mixer-btn { background: #C9A87C; }
+        .mixer-modal { position: fixed; bottom: 6rem; right: 2rem; width: 280px; background: var(--card-bg); border-radius: 1.5rem; border: 1px solid var(--card-border); box-shadow: var(--shadow-md); padding: 1rem; z-index: 201; display: none; backdrop-filter: blur(8px); }
+        .mixer-modal.active { display: block; }
+        .mixer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-weight: 600; color: var(--text); }
+        .mixer-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .mixer-sound-item { display: flex; align-items: center; margin-bottom: 0.8rem; gap: 0.5rem; }
+        .mixer-sound-name { width: 65px; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer; transition: 0.2s; }
+        .mixer-sound-name.active { color: var(--accent); }
+        .mixer-sound-name:hover { color: var(--accent); }
+        .mixer-slider { flex: 1; height: 4px; -webkit-appearance: none; background: var(--slider-bg); border-radius: 4px; }
+        .mixer-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #B5875A; border-radius: 50%; cursor: pointer; border: none; }
+        .mixer-slider::-moz-range-thumb { width: 12px; height: 12px; background: #B5875A; border-radius: 50%; cursor: pointer; border: none; }
+        body.dark .mixer-slider::-webkit-slider-thumb { background: #C9A87C; }
+        .mixer-value { font-size: 0.7rem; color: var(--text-muted); width: 35px; text-align: center; }
+        .mixer-btn { width: 100%; background: var(--btn-bg); border: none; border-radius: 40px; padding: 0.3rem; font-size: 0.7rem; font-weight: 500; color: var(--btn-text); cursor: pointer; margin-top: 0.5rem; }
+        .mixer-btn:hover { background: var(--btn-active); }
+        
+        @media (max-width: 650px) { .cloud-letter { font-size: 2.4rem; } .phrase { font-size: 1.4rem; } h1 { font-size: 1.5rem; } .theme-switch { top: 1rem; right: 1rem; font-size: 0.7rem; padding: 4px 10px; } .breathing-wrapper { width: 220px; height: 220px; } .breathing-btn { width: 90px; font-size: 0.7rem; padding: 0.4rem 0.8rem; } .floating-mixer-btn { width: 48px; height: 48px; font-size: 1.5rem; bottom: 1.5rem; right: 1.5rem; } .mixer-modal { width: 260px; right: 0.5rem; bottom: 5rem; } .selection-card { padding: 0.3rem 0.6rem; min-width: 60px; } .selection-label { font-size: 0.7rem; } }
+    </style>
+</head>
+<body>
+<button class="theme-switch" id="themeToggle">тёмная тема</button>
+<button class="floating-mixer-btn" id="floatingMixerBtn">🎧</button>
+<div class="mixer-modal" id="mixerModal">
+    <div class="mixer-header"><span>настрой шум</span><button class="mixer-close" id="mixerCloseBtn">✕</button></div>
+    <div id="mixerSoundsList"></div>
+    <button class="mixer-btn" id="muteAllBtn">выключить звуки</button>
+</div>
+
+<div class="container">
+    <a href="index.html" class="logo-link">
+        <div class="logo-wrapper">
+            <span class="cloud-letter">в</span><span class="cloud-letter">а</span><span class="cloud-letter">й</span>
+            <span class="cloud-letter">б</span><span class="cloud-letter">и</span><span class="cloud-letter">к</span>
+        </div>
+    </a>
+    <div class="tagline">убежище. здесь тихо</div>
+    <h1>мне тревожно</h1>
+    <div class="sub">дыхание помогает вернуться в тело</div>
+    <div class="phrase" id="phrase">ты можешь просто дышать.</div>
+    <div class="breathing-wrapper">
+        <div class="breathing-circle" id="breathingCircle"></div>
+        <div class="breathing-controls">
+            <button class="breathing-btn" id="startBreathing">начать</button>
+            <button class="breathing-btn" id="stopBreathing">закончить</button>
+        </div>
+    </div>
+    <div class="breathing-status" id="breathingStatus">нажми «начать»</div>
+    <div class="breathing-instruction">вдох — круг расширяется, выдох — сжимается. дыши в своём ритме.</div>
+
+    <div class="content-selection">
+        <div class="selection-title">что может помочь, когда тревожно</div>
+        <div class="selection-grid">
+            <a href="films.html?mood=anxious" class="selection-card">фильмы</a>
+            <a href="books.html?mood=anxious" class="selection-card">книги</a>
+            <a href="audiobooks.html?mood=anxious" class="selection-card">аудиокниги</a>
+            <a href="music.html?mood=anxious" class="selection-card">музыка</a>
+        </div>
+    </div>
+    <a href="index.html" class="back-link">вернуться на главную</a>
+</div>
+
+<a href="help.html" class="help-link">если очень плохо — помощь</a>
+
+<script>
+    const soundsList = [
+        { name: 'дождь', key: 'rain', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20(2).mp3' },
+        { name: 'костёр', key: 'fire', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BA%D0%BE%D1%81%D1%82%D0%B5%D1%80.mp3' },
+        { name: 'море', key: 'sea', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BC%D0%BE%D1%80%D0%B5.mp3' },
+        { name: 'лес', key: 'forest', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BB%D0%B5%D1%81.mp3' },
+        { name: 'гроза', key: 'storm', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B3%D1%80%D0%BE%D0%B7%D0%B0.mp3' }
+    ];
+    let audioElements = {}, activeStates = {}, volumes = {};
+    soundsList.forEach(s => { activeStates[s.key]=false; volumes[s.key]=0.4; audioElements[s.key]=new Audio(s.url); audioElements[s.key].loop=true; audioElements[s.key].volume=volumes[s.key]; audioElements[s.key].load(); });
+    function loadSoundSettings() { try{ let v=localStorage.getItem('vaibik_sound_volumes'); if(v) Object.assign(volumes,JSON.parse(v)); let a=localStorage.getItem('vaibik_sound_active'); if(a) Object.assign(activeStates,JSON.parse(a)); for(let k in volumes) if(audioElements[k]) audioElements[k].volume=volumes[k]; for(let k in activeStates) if(activeStates[k]&&audioElements[k]) audioElements[k].play().catch(e=>{}); }catch(e){} }
+    function saveSoundSettings() { localStorage.setItem('vaibik_sound_volumes',JSON.stringify(volumes)); localStorage.setItem('vaibik_sound_active',JSON.stringify(activeStates)); }
+    function updateMixerUI() {
+        let c=document.getElementById('mixerSoundsList'); if(!c) return; c.innerHTML='';
+        soundsList.forEach(s=>{ let div=document.createElement('div'); div.className='mixer-sound-item'; div.innerHTML=`<span class="mixer-sound-name ${activeStates[s.key]?'active':''}" data-key="${s.key}">${s.name}</span><input type="range" class="mixer-slider" data-key="${s.key}" min="0" max="100" step="1" value="${Math.round(volumes[s.key]*100)}"><span class="mixer-value">${Math.round(volumes[s.key]*100)}%</span>`; c.appendChild(div); });
+        document.querySelectorAll('.mixer-sound-name').forEach(el=>{ let k=el.dataset.key; el.addEventListener('click',e=>{ e.stopPropagation(); if(activeStates[k]){ audioElements[k].pause(); activeStates[k]=false; el.classList.remove('active'); }else{ audioElements[k].play().catch(e=>{}); activeStates[k]=true; el.classList.add('active'); } saveSoundSettings(); updateMixerUI(); }); });
+        document.querySelectorAll('.mixer-slider').forEach(sl=>{ sl.addEventListener('input',e=>{ let k=sl.dataset.key; let val=parseInt(e.target.value)/100; volumes[k]=val; if(audioElements[k]) audioElements[k].volume=val; sl.nextElementSibling.innerText=e.target.value+'%'; saveSoundSettings(); }); });
+    }
+    function muteAllSounds(){ for(let k in audioElements) if(activeStates[k]){ audioElements[k].pause(); activeStates[k]=false; } saveSoundSettings(); updateMixerUI(); }
+    const mixerModal=document.getElementById('mixerModal'); document.getElementById('floatingMixerBtn').addEventListener('click',()=>{ mixerModal.classList.toggle('active'); updateMixerUI(); }); document.getElementById('mixerCloseBtn').addEventListener('click',()=>mixerModal.classList.remove('active')); document.getElementById('muteAllBtn').addEventListener('click',muteAllSounds); loadSoundSettings();
+
+    const phrases = ["ты можешь просто дышать.", "ничего не нужно.", "ты в безопасности.", "можно ничего не чувствовать.", "тишина лечит.", "здесь нет обязательств.", "ты не один.", "пустота — не враг."];
+    document.getElementById('phrase').innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    let breathingInterval = null, isBreathing = false;
+    const circle = document.getElementById('breathingCircle'), statusDiv = document.getElementById('breathingStatus');
+    function startBreathing() { if(breathingInterval) clearInterval(breathingInterval); isBreathing=true; circle.classList.remove('exhale'); circle.classList.add('inhale'); statusDiv.innerText='вдох...'; let step=0; breathingInterval=setInterval(()=>{ if(!isBreathing) return; if(step===0){ circle.classList.remove('inhale'); circle.classList.add('exhale'); statusDiv.innerText='выдох...'; step=1; }else{ circle.classList.remove('exhale'); circle.classList.add('inhale'); statusDiv.innerText='вдох...'; step=0; } },4000); }
+    function stopBreathing() { if(breathingInterval) clearInterval(breathingInterval); isBreathing=false; circle.classList.remove('inhale','exhale'); circle.style.transform='scale(0.6)'; circle.style.opacity='0.3'; statusDiv.innerText='дыхание завершено'; setTimeout(()=>{ statusDiv.innerText='нажми «начать»'; },2000); }
+    document.getElementById('startBreathing').addEventListener('click', startBreathing);
+    document.getElementById('stopBreathing').addEventListener('click', stopBreathing);
+    
+    function initTheme(){ let st=localStorage.getItem('vaibik_theme'); let tb=document.getElementById('themeToggle'); if(st==='dark'){ document.body.classList.add('dark'); tb.innerText='светлая тема'; }else{ document.body.classList.remove('dark'); tb.innerText='тёмная тема'; } }
+    function toggleTheme(){ let tb=document.getElementById('themeToggle'); if(document.body.classList.contains('dark')){ document.body.classList.remove('dark'); localStorage.setItem('vaibik_theme','light'); tb.innerText='тёмная тема'; }else{ document.body.classList.add('dark'); localStorage.setItem('vaibik_theme','dark'); tb.innerText='светлая тема'; } }
+    initTheme(); document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+</script>
+</body>
+</html>

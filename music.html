@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Вайбик — музыка</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=3">
+    <link rel="shortcut icon" href="/favicon.png?v=3">
+    <link rel="apple-touch-icon" href="/favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        :root { --bg: #F2EFE9; --text: #4A3729; --text-muted: #7A5E4A; --card-bg: #FFFFFF; --card-border: #E2D4C8; --btn-bg: #FFFFFF; --btn-active: #DBC8B5; --btn-text: #4A3729; --accent: #A87B5A; --footer-bg: rgba(255, 250, 240, 0.7); --slider-bg: #DCCCB9; --slider-thumb: #B5875A; --muted: #7A5E4A; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.08); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.1); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.12); }
+        body.dark { --bg: #2A241E; --text: #F0E2D4; --text-muted: #C5B19B; --card-bg: #3D3228; --card-border: #5E4E3E; --btn-bg: #3D3228; --btn-active: #5E4B38; --btn-text: #E0D4C8; --accent: #C9A87C; --footer-bg: rgba(30, 25, 22, 0.8); --slider-bg: #5E4E3E; --slider-thumb: #C9A87C; --muted: #C5B19B; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.3); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.4); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.5); }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; padding: 1.5rem 1.5rem 0; min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; position: relative; }
+        body::before { content: ""; position: fixed; top: -15%; left: -15%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(180, 140, 100, 0.15), transparent 70%); border-radius: 50%; filter: blur(100px); z-index: 0; pointer-events: none; }
+        body::after { content: ""; position: fixed; bottom: -15%; right: -15%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(140, 100, 70, 0.12), transparent 70%); border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; }
+        body.dark::before { background: radial-gradient(circle, rgba(100, 80, 60, 0.25), transparent 70%); }
+        body.dark::after { background: radial-gradient(circle, rgba(80, 60, 40, 0.2), transparent 70%); }
+        .container { max-width: 1200px; margin: 0 auto; flex: 1; position: relative; z-index: 2; }
+        .theme-switch { position: fixed; top: 1.5rem; right: 1.5rem; background: var(--btn-bg); border: 1px solid var(--card-border); font-size: 0.8rem; font-weight: 500; color: var(--muted); cursor: pointer; z-index: 100; transition: 0.2s; font-family: 'Quicksand', sans-serif; padding: 6px 14px; border-radius: 30px; backdrop-filter: blur(4px); box-shadow: var(--shadow-sm); }
+        .theme-switch:hover { color: var(--text); background: var(--btn-active); transform: translateY(-2px); }
+        
+        .logo-link { text-decoration: none; display: block; }
+        .logo-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 0.15rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .cloud-letter { display: inline-block; font-size: 4rem; font-weight: 600; background: linear-gradient(135deg, #E6D0B5, #B5875A); background-clip: text; -webkit-background-clip: text; color: transparent; margin: 0; padding: 0; transition: all 0.2s ease; animation: float 3s infinite ease-in-out; text-shadow: 0 0 12px rgba(139, 90, 43, 0.2), 0 0 20px rgba(139, 90, 43, 0.1); filter: blur(0.3px); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        .cloud-letter:hover { transform: translateY(-8px); filter: blur(0px); text-shadow: 0 0 18px rgba(139, 90, 43, 0.3); }
+        
+        .tagline { text-align: center; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 4px; margin-bottom: 1.5rem; }
+        .nav-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .nav-link { background: transparent; border: none; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.2s; text-decoration: none; padding: 0.2rem 0; border-bottom: 1px dashed transparent; }
+        .nav-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        .description { text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--text-muted); max-width: 600px; margin-left: auto; margin-right: auto; }
+        .playlists-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.8rem; margin-bottom: 2rem; }
+        .playlist-card { background: var(--card-bg); border-radius: 1.5rem; border: 1px solid var(--card-border); padding: 1.2rem; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+        .playlist-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+        .playlist-icon { width: 48px; height: 48px; margin-bottom: 0.8rem; background: #DDCDBA; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #8F7A64; overflow: hidden; }
+        .playlist-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .playlist-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--text); }
+        .playlist-desc { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.3; flex: 1; }
+        .playlist-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
+        .platform-btn { display: inline-block; background: var(--btn-bg); border: 1px solid var(--card-border); border-radius: 40px; padding: 0.4rem 1rem; font-size: 0.7rem; font-weight: 500; color: var(--btn-text); text-decoration: none; transition: 0.2s; }
+        .platform-btn:hover { background: var(--btn-active); transform: translateY(-2px); }
+        .random-track { text-align: center; margin: 2rem 0; padding: 1.5rem; background: var(--footer-bg); border-radius: 2rem; backdrop-filter: blur(8px); border: 1px solid var(--card-border); }
+        .random-track-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .random-track-btn { background: var(--btn-bg); border: 1px solid var(--card-border); font-family: 'Quicksand', sans-serif; font-size: 0.85rem; font-weight: 500; color: var(--btn-text); cursor: pointer; padding: 0.5rem 1.2rem; border-radius: 40px; transition: 0.2s; margin-bottom: 1rem; }
+        .random-track-btn:hover { background: var(--btn-active); transform: translateY(-2px); }
+        .random-track-result { font-size: 0.85rem; color: var(--accent); margin-top: 0.5rem; line-height: 1.5; }
+        .random-track-result a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); margin: 0 0.3rem; }
+        
+        .site-footer { margin-top: 2rem; background: var(--footer-bg); backdrop-filter: blur(8px); border-radius: 2rem 2rem 0 0; padding: 1rem 1.5rem; border-top: 1px solid var(--card-border); text-align: center; }
+        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; max-width: 1000px; margin: 0 auto; }
+        .footer-about { font-size: 0.7rem; color: var(--text-muted); text-align: left; flex: 2; }
+        .footer-contacts { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+        .footer-contacts a { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; transition: 0.2s; }
+        .footer-contacts a:hover { color: var(--accent); }
+        .footer-copyright { text-align: center; font-size: 0.6rem; color: var(--text-muted); margin-top: 0.8rem; border-top: 0.5px solid var(--card-border); padding-top: 0.6rem; }
+        .help-link { display: inline-block; background-color: var(--accent); border: none; color: white; padding: 0.6rem 1.2rem; border-radius: 40px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; margin-bottom: 1rem; box-shadow: var(--shadow-sm); text-decoration: none; }
+        .help-link:hover { background-color: #8C644A; transform: scale(1.01); box-shadow: var(--shadow-md); }
+        .credits { font-size: 0.6rem; color: var(--text-muted); }
+        
+        .floating-mixer-btn { position: fixed; bottom: 2rem; right: 2rem; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s; z-index: 200; }
+        .floating-mixer-btn:hover { transform: scale(1.05); background: #8C644A; }
+        body.dark .floating-mixer-btn { background: #C9A87C; }
+        .mixer-modal { position: fixed; bottom: 6rem; right: 2rem; width: 280px; background: var(--card-bg); border-radius: 1.5rem; border: 1px solid var(--card-border); box-shadow: var(--shadow-md); padding: 1rem; z-index: 201; display: none; backdrop-filter: blur(8px); }
+        .mixer-modal.active { display: block; }
+        .mixer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-weight: 600; color: var(--text); }
+        .mixer-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .mixer-sound-item { display: flex; align-items: center; margin-bottom: 0.8rem; gap: 0.5rem; }
+        .mixer-sound-name { width: 65px; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer; transition: 0.2s; }
+        .mixer-sound-name.active { color: var(--accent); }
+        .mixer-slider { flex: 1; height: 4px; -webkit-appearance: none; background: var(--slider-bg); border-radius: 4px; }
+        .mixer-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--slider-thumb); border-radius: 50%; cursor: pointer; border: none; }
+        .mixer-slider::-moz-range-thumb { width: 12px; height: 12px; background: var(--slider-thumb); border-radius: 50%; cursor: pointer; border: none; }
+        body.dark .mixer-slider::-webkit-slider-thumb { background: #C9A87C; }
+        .mixer-value { font-size: 0.7rem; color: var(--text-muted); width: 35px; text-align: center; }
+        .mixer-btn { width: 100%; background: var(--btn-bg); border: none; border-radius: 40px; padding: 0.3rem; font-size: 0.7rem; font-weight: 500; color: var(--btn-text); cursor: pointer; margin-top: 0.5rem; }
+        .mixer-btn:hover { background: var(--btn-active); }
+        
+        @media (max-width: 650px) {
+            .cloud-letter { font-size: 2.4rem; }
+            .playlists-grid { grid-template-columns: 1fr; }
+            .theme-switch { top: 1rem; right: 1rem; font-size: 0.7rem; padding: 4px 10px; }
+            .floating-mixer-btn { width: 48px; height: 48px; font-size: 1.5rem; bottom: 1.5rem; right: 1.5rem; }
+            .mixer-modal { width: 260px; right: 0.5rem; bottom: 5rem; }
+        }
+    </style>
+</head>
+<body>
+<button class="theme-switch" id="themeToggle">тёмная тема</button>
+<button class="floating-mixer-btn" id="floatingMixerBtn">🎧</button>
+<div class="mixer-modal" id="mixerModal">
+    <div class="mixer-header"><span>настрой шум</span><button class="mixer-close" id="mixerCloseBtn">✕</button></div>
+    <div id="mixerSoundsList"></div>
+    <button class="mixer-btn" id="muteAllBtn">выключить звуки</button>
+</div>
+
+<div class="container">
+    <a href="index.html" class="logo-link">
+        <div class="logo-wrapper">
+            <span class="cloud-letter">в</span><span class="cloud-letter">а</span><span class="cloud-letter">й</span>
+            <span class="cloud-letter">б</span><span class="cloud-letter">и</span><span class="cloud-letter">к</span>
+        </div>
+    </a>
+    <div class="tagline">убежище. здесь тихо</div>
+
+    <div class="nav-links">
+        <a href="films.html" class="nav-link">фильмы</a>
+        <a href="books.html" class="nav-link">книги</a>
+        <a href="audiobooks.html" class="nav-link">аудиокниги</a>
+        <a href="music.html" class="nav-link">музыка</a>
+    </div>
+
+    <div class="description">
+        Музыка под твоё состояние. Нажми на платформу – откроется плейлист.
+    </div>
+
+    <div class="playlists-grid" id="playlistsGrid"></div>
+
+    <div class="random-track">
+        <div class="random-track-label">не знаешь, что выбрать?</div>
+        <button class="random-track-btn" id="randomTrackBtn">случайный трек</button>
+        <div class="random-track-result" id="randomTrackResult"></div>
+    </div>
+</div>
+
+<div class="site-footer">
+    <div class="footer-content">
+        <div class="footer-about"><strong>Вайбик</strong> — тихое пространство, где можно побыть с собой. Здесь не лечат, не оценивают, не советуют. Просто звуки, кино, книги и атмосфера.</div>
+        <div class="footer-contacts">
+            <a href="#" id="contactEmail">hello@vaibik.ru</a>
+            <a href="https://t.me/vaibik_project" target="_blank" id="contactTelegram">telegram</a>
+            <a href="https://www.instagram.com/vaibik.project" target="_blank" id="contactInstagram">instagram</a>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <a href="help.html" class="help-link">если очень плохо — помощь</a>
+        <div class="credits">все чувства имеют значение</div>
+    </div>
+</div>
+
+<script>
+    const soundsList = [
+        { name: 'дождь', key: 'rain', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20(2).mp3' },
+        { name: 'костёр', key: 'fire', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BA%D0%BE%D1%81%D1%82%D0%B5%D1%80.mp3' },
+        { name: 'море', key: 'sea', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BC%D0%BE%D1%80%D0%B5.mp3' },
+        { name: 'лес', key: 'forest', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BB%D0%B5%D1%81.mp3' },
+        { name: 'гроза', key: 'storm', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B3%D1%80%D0%BE%D0%B7%D0%B0.mp3' }
+    ];
+    let audioElements = {}, activeStates = {}, volumes = {};
+    soundsList.forEach(s => { activeStates[s.key]=false; volumes[s.key]=0.4; audioElements[s.key]=new Audio(s.url); audioElements[s.key].loop=true; audioElements[s.key].volume=volumes[s.key]; audioElements[s.key].load(); });
+    function loadSoundSettings() {
+        try{ let v=localStorage.getItem('vaibik_sound_volumes'); if(v) Object.assign(volumes,JSON.parse(v)); let a=localStorage.getItem('vaibik_sound_active'); if(a) Object.assign(activeStates,JSON.parse(a)); for(let k in volumes) if(audioElements[k]) audioElements[k].volume=volumes[k]; for(let k in activeStates) if(activeStates[k]&&audioElements[k]) audioElements[k].play().catch(e=>{}); }catch(e){}
+    }
+    function saveSoundSettings() { localStorage.setItem('vaibik_sound_volumes',JSON.stringify(volumes)); localStorage.setItem('vaibik_sound_active',JSON.stringify(activeStates)); }
+    function updateMixerUI() {
+        const c=document.getElementById('mixerSoundsList'); if(!c) return; c.innerHTML='';
+        soundsList.forEach(s=>{ let div=document.createElement('div'); div.className='mixer-sound-item'; div.innerHTML=`<span class="mixer-sound-name ${activeStates[s.key]?'active':''}" data-key="${s.key}">${s.name}</span><input type="range" class="mixer-slider" data-key="${s.key}" min="0" max="100" step="1" value="${Math.round(volumes[s.key]*100)}"><span class="mixer-value">${Math.round(volumes[s.key]*100)}%</span>`; c.appendChild(div); });
+        document.querySelectorAll('.mixer-sound-name').forEach(el=>{ let k=el.dataset.key; el.addEventListener('click',e=>{ e.stopPropagation(); if(activeStates[k]){ audioElements[k].pause(); activeStates[k]=false; el.classList.remove('active'); }else{ audioElements[k].play().catch(e=>{}); activeStates[k]=true; el.classList.add('active'); } saveSoundSettings(); updateMixerUI(); }); });
+        document.querySelectorAll('.mixer-slider').forEach(sl=>{ sl.addEventListener('input',e=>{ let k=sl.dataset.key; let val=parseInt(e.target.value)/100; volumes[k]=val; if(audioElements[k]) audioElements[k].volume=val; sl.nextElementSibling.innerText=e.target.value+'%'; saveSoundSettings(); }); });
+    }
+    function muteAllSounds(){ for(let k in audioElements) if(activeStates[k]){ audioElements[k].pause(); activeStates[k]=false; } saveSoundSettings(); updateMixerUI(); }
+    const mixerModal=document.getElementById('mixerModal'); document.getElementById('floatingMixerBtn').addEventListener('click',()=>{ mixerModal.classList.toggle('active'); updateMixerUI(); }); document.getElementById('mixerCloseBtn').addEventListener('click',()=>mixerModal.classList.remove('active')); document.getElementById('muteAllBtn').addEventListener('click',muteAllSounds); loadSoundSettings();
+
+    const playlists = [
+        { mood: "тревога", desc: "эмбиент, фортепиано, минимализм – успокоить ум", icon: "", spotify: "https://open.spotify.com/playlist/37i9dQZF1DX3Ogo9pFvBkY", youtube: "https://youtube.com/playlist?list=PLzCxunOM5WFLOwvGyZ5LqBRSl7iB7EP4b", yandex: "https://music.yandex.ru/users/music.public/playlists/1096" },
+        { mood: "грусть", desc: "меланхолия, тихая гитара, лирика", icon: "", spotify: "https://open.spotify.com/playlist/37i9dQZF1DX3Ogo9pFvBkY", youtube: "https://youtube.com/playlist?list=PLzCxunOM5WFKbX7X7mBz8mXv5hXJjYqYq", yandex: "https://music.yandex.ru/users/music.public/playlists/1097" },
+        { mood: "злость", desc: "инструментальный металл, тяжёлые гитары, выход гнева", icon: "", spotify: "https://open.spotify.com/playlist/37i9dQZF1DX3Ogo9pFvBkY", youtube: "https://youtube.com/playlist?list=PLzCxunOM5WFKkYqKj8q5e5q5q5q5q5q5", yandex: "https://music.yandex.ru/users/music.public/playlists/1098" },
+        { mood: "пустота", desc: "тёмный эмбиент, пустые пространства, принятие", icon: "", spotify: "https://open.spotify.com/playlist/37i9dQZF1DX3Ogo9pFvBkY", youtube: "https://youtube.com/playlist?list=PLzCxunOM5WFJjJjJjJjJjJjJjJjJj", yandex: "https://music.yandex.ru/users/music.public/playlists/1099" },
+        { mood: "одиночество", desc: "инди-фолк, лирика о себе, тепло", icon: "", spotify: "https://open.spotify.com/playlist/37i9dQZF1DX3Ogo9pFvBkY", youtube: "https://youtube.com/playlist?list=PLzCxunOM5WFJjJjJjJjJjJjJjJjJk", yandex: "https://music.yandex.ru/users/music.public/playlists/1100" }
+    ];
+
+    function buildPlaylists() {
+        const container = document.getElementById('playlistsGrid');
+        container.innerHTML = '';
+        playlists.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'playlist-card';
+            const iconHtml = p.icon ? `<img src="${p.icon}" alt="">` : '';
+            card.innerHTML = `
+                <div class="playlist-icon">${iconHtml || '<span style="font-size:0.7rem;">обложка</span>'}</div>
+                <div class="playlist-title">${p.mood}</div>
+                <div class="playlist-desc">${p.desc}</div>
+                <div class="playlist-links">
+                    <a href="${p.spotify}" target="_blank" class="platform-btn">Spotify</a>
+                    <a href="${p.youtube}" target="_blank" class="platform-btn">YouTube</a>
+                    <a href="${p.yandex}" target="_blank" class="platform-btn">Яндекс</a>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    const tracks = [
+        { name: "Max Richter - On the Nature of Daylight", spotify: "https://open.spotify.com/track/2Bq9U3hxG4fdqxP1MDnOJQ", youtube: "https://youtu.be/8l5k_0Zz1Zc", yandex: "https://music.yandex.ru/album/123456/track/789012" },
+        { name: "Ludovico Einaudi - Nuvole Bianche", spotify: "https://open.spotify.com/track/6MmxpLMH5WYt3L6eC5PbR4", youtube: "https://youtu.be/4UZrs3d9L5Y", yandex: "https://music.yandex.ru/album/234567/track/890123" },
+        { name: "Olafur Arnalds - Saman", spotify: "https://open.spotify.com/track/58t7jvrp8pVCLgXqBvns1M", youtube: "https://youtu.be/3LyTFpXkzFo", yandex: "https://music.yandex.ru/album/345678/track/901234" },
+        { name: "Hania Rani - Eden", spotify: "https://open.spotify.com/track/2VhHWT79IcstqosQ0LrMHy", youtube: "https://youtu.be/6j5DkBdVv8I", yandex: "https://music.yandex.ru/album/456789/track/012345" },
+        { name: "Brian Eno - An Ending (Ascent)", spotify: "https://open.spotify.com/track/4y6Z0ePfUXkzPzibZBOPcb", youtube: "https://youtu.be/6j5DkBdVv8I", yandex: "https://music.yandex.ru/album/567890/track/123456" }
+    ];
+
+    document.getElementById('randomTrackBtn').addEventListener('click', () => {
+        const random = tracks[Math.floor(Math.random() * tracks.length)];
+        const resultDiv = document.getElementById('randomTrackResult');
+        resultDiv.innerHTML = `
+            ${random.name}<br>
+            <a href="${random.spotify}" target="_blank">Spotify</a> •
+            <a href="${random.youtube}" target="_blank">YouTube</a> •
+            <a href="${random.yandex}" target="_blank">Яндекс Музыка</a>
+        `;
+    });
+
+    function initTheme(){ let st=localStorage.getItem('vaibik_theme'); let tb=document.getElementById('themeToggle'); if(st==='dark'){ document.body.classList.add('dark'); tb.innerText='светлая тема'; }else{ document.body.classList.remove('dark'); tb.innerText='тёмная тема'; } }
+    function toggleTheme(){ let tb=document.getElementById('themeToggle'); if(document.body.classList.contains('dark')){ document.body.classList.remove('dark'); localStorage.setItem('vaibik_theme','light'); tb.innerText='тёмная тема'; }else{ document.body.classList.add('dark'); localStorage.setItem('vaibik_theme','dark'); tb.innerText='светлая тема'; } }
+    initTheme(); document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+    document.getElementById('contactEmail').onclick = () => alert('Скопируйте адрес: hello@vaibik.ru');
+    document.getElementById('contactTelegram').onclick = () => window.open('https://t.me/vaibik_project', '_blank');
+    document.getElementById('contactInstagram').onclick = () => window.open('https://www.instagram.com/vaibik.project', '_blank');
+
+    buildPlaylists();
+</script>
+</body>
+</html>

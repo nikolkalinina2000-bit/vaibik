@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Вайбик — аудиокниги</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=3">
+    <link rel="shortcut icon" href="/favicon.png?v=3">
+    <link rel="apple-touch-icon" href="/favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;user-select:none}
+        :root{--bg:#F2EFE9;--text:#4A3729;--text-muted:#7A5E4A;--card-bg:#FFFFFF;--card-border:#E2D4C8;--btn-bg:#FFFFFF;--btn-active:#DBC8B5;--btn-text:#4A3729;--accent:#A87B5A;--footer-bg:rgba(255,250,240,0.7);--slider-bg:#DCCCB9;--slider-thumb:#B5875A;--muted:#7A5E4A;--shadow-sm:0 6px 12px -8px rgba(0,0,0,0.08);--shadow-md:0 12px 24px -12px rgba(0,0,0,0.1);--shadow-lg:0 20px 30px -15px rgba(0,0,0,0.12)}
+        body.dark{--bg:#2A241E;--text:#F0E2D4;--text-muted:#C5B19B;--card-bg:#3D3228;--card-border:#5E4E3E;--btn-bg:#3D3228;--btn-active:#5E4B38;--btn-text:#E0D4C8;--accent:#C9A87C;--footer-bg:rgba(30,25,22,0.8);--slider-bg:#5E4E3E;--slider-thumb:#C9A87C;--muted:#C5B19B;--shadow-sm:0 6px 12px -8px rgba(0,0,0,0.3);--shadow-md:0 12px 24px -12px rgba(0,0,0,0.4);--shadow-lg:0 20px 30px -15px rgba(0,0,0,0.5)}
+        body{font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);line-height:1.4;padding:1.5rem 1.5rem 0;min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s;position:relative}
+        body::before{content:"";position:fixed;top:-15%;left:-15%;width:600px;height:600px;background:radial-gradient(circle,rgba(180,140,100,0.15),transparent 70%);border-radius:50%;filter:blur(100px);z-index:0;pointer-events:none}
+        body::after{content:"";position:fixed;bottom:-15%;right:-15%;width:700px;height:700px;background:radial-gradient(circle,rgba(140,100,70,0.12),transparent 70%);border-radius:50%;filter:blur(120px);z-index:0;pointer-events:none}
+        body.dark::before{background:radial-gradient(circle,rgba(100,80,60,0.25),transparent 70%)}
+        body.dark::after{background:radial-gradient(circle,rgba(80,60,40,0.2),transparent 70%)}
+        .container{max-width:1200px;margin:0 auto;flex:1;position:relative;z-index:2}
+        .theme-switch{position:fixed;top:1.5rem;right:1.5rem;background:var(--btn-bg);border:1px solid var(--card-border);font-size:.8rem;font-weight:500;color:var(--muted);cursor:pointer;z-index:100;transition:.2s;font-family:'Quicksand',sans-serif;padding:6px 14px;border-radius:30px;backdrop-filter:blur(4px);box-shadow:var(--shadow-sm)}
+        .theme-switch:hover{color:var(--text);background:var(--btn-active);transform:translateY(-2px)}
+        .logo-link{text-decoration:none;display:block}
+        .logo-wrapper{display:flex;justify-content:center;align-items:baseline;gap:.15rem;margin-bottom:.8rem;flex-wrap:wrap}
+        .cloud-letter{display:inline-block;font-size:4rem;font-weight:600;background:linear-gradient(135deg,#E6D0B5,#B5875A);background-clip:text;-webkit-background-clip:text;color:transparent;margin:0;padding:0;transition:all .2s ease;animation:float 3s infinite ease-in-out;text-shadow:0 0 12px rgba(139,90,43,0.2),0 0 20px rgba(139,90,43,0.1);filter:blur(.3px)}
+        @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-5px)}100%{transform:translateY(0)}}
+        .cloud-letter:hover{transform:translateY(-8px);filter:blur(0);text-shadow:0 0 18px rgba(139,90,43,0.3)}
+        .tagline{text-align:center;font-size:.8rem;font-weight:500;color:var(--text-muted);letter-spacing:4px;margin-bottom:1.5rem}
+        .nav-links{display:flex;justify-content:center;gap:1.5rem;margin-bottom:2rem;flex-wrap:wrap}
+        .nav-link{background:transparent;border:none;font-size:.9rem;font-weight:600;color:var(--text-muted);cursor:pointer;transition:.2s;text-decoration:none;padding:.2rem 0;border-bottom:1px dashed transparent}
+        .nav-link:hover{color:var(--accent);border-bottom-color:var(--accent)}
+        .filters-section{margin-bottom:2rem;text-align:center}
+        .filters-label{font-size:.75rem;font-weight:600;letter-spacing:3px;color:var(--text-muted);margin-bottom:1rem}
+        .filters-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
+        .filter-btn{background:var(--btn-bg);border:1px solid var(--card-border);padding:.3rem 1rem;border-radius:40px;font-size:.75rem;font-weight:500;color:var(--btn-text);cursor:pointer;transition:.2s}
+        .filter-btn.active{background:var(--btn-active);color:var(--text)}
+        .filter-btn:hover{background:var(--btn-active);transform:translateY(-2px)}
+        .audiobooks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;margin-bottom:2rem}
+        @media(max-width:900px){.audiobooks-grid{grid-template-columns:repeat(2,1fr);gap:1.2rem}}
+        @media(max-width:600px){.audiobooks-grid{grid-template-columns:1fr}}
+        .audiobook-card{background:var(--card-bg);border-radius:1.5rem;border:1px solid var(--card-border);padding:1rem;transition:transform .2s ease,box-shadow .2s ease;cursor:default;box-shadow:var(--shadow-sm);position:relative;opacity:0;transform:translateY(15px);animation:cardFadeIn .4s ease forwards;display:flex;flex-direction:column;height:100%}
+        @keyframes cardFadeIn{to{opacity:1;transform:translateY(0)}}
+        .audiobook-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
+        .save-btn{position:absolute;top:.8rem;right:.8rem;background:transparent;border:none;font-size:2rem;cursor:pointer;transition:.2s;color:var(--text-muted);opacity:.85;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:5;line-height:1}
+        .save-btn span{display:inline-block;transform:scaleX(.9) scaleY(.85)}
+        .save-btn:hover{background:rgba(168,123,90,0.6);opacity:1;transform:scale(1.05)}
+        .save-btn.saved{color:#D36F52;opacity:1;background:rgba(211,111,82,0.5)}
+        body.dark .save-btn.saved{color:#EAA67C;background:rgba(234,166,124,0.5)}
+        .audiobook-cover{background:#DDCDBA;border-radius:1rem;height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;overflow:hidden}
+        .audiobook-cover img{width:100%;height:100%;object-fit:cover}
+        .audiobook-cover-placeholder{font-size:.9rem;font-weight:500;color:#8F7A64;text-align:center;padding:1rem}
+        .audiobook-title{font-size:1.2rem;font-weight:700;margin-bottom:.2rem;color:var(--text)}
+        .audiobook-author{font-size:.7rem;font-weight:500;color:var(--text-muted);margin-bottom:.5rem}
+        .audiobook-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem}
+        .audiobook-tag{background:var(--btn-active);padding:.15rem .5rem;border-radius:20px;font-size:.6rem;color:var(--btn-text)}
+        .audiobook-desc{font-size:.75rem;color:var(--text-muted);line-height:1.3;margin-bottom:.6rem}
+        .audiobook-ratings{display:flex;flex-direction:column;gap:.2rem;margin-top:.3rem;margin-bottom:.5rem}
+        .rating-item{display:flex;align-items:center;gap:.5rem;font-size:.6rem;font-weight:500;color:var(--text)}
+        .rating-label{width:52px;font-size:.6rem}
+        .rating-bar{flex:1;height:3px;background:var(--slider-bg);border-radius:2px;overflow:hidden}
+        .rating-fill{height:100%;width:0;border-radius:2px}
+        .rating-fill.trogaet{background:#9B8A78}
+        .rating-fill.sogrevaet{background:#D8B48F}
+        .rating-value{width:25px;text-align:right;font-size:.6rem}
+        .audiobook-links{display:flex;flex-wrap:nowrap;gap:.5rem;justify-content:center;margin-top:auto;padding-top:.5rem}
+        .listen-link{background:var(--btn-bg);border:1px solid var(--card-border);border-radius:40px;padding:.3rem .8rem;font-size:.65rem;font-weight:600;color:var(--btn-text);text-decoration:none;transition:.2s;text-align:center;flex:1;white-space:nowrap}
+        .listen-link:hover{background:var(--btn-active);transform:translateY(-2px)}
+        .site-footer{margin-top:2rem;background:var(--footer-bg);backdrop-filter:blur(8px);border-radius:2rem 2rem 0 0;padding:1rem 1.5rem;border-top:1px solid var(--card-border);text-align:center}
+        .footer-content{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;max-width:1000px;margin:0 auto}
+        .footer-about{font-size:.7rem;color:var(--text-muted);text-align:left;flex:2}
+        .footer-contacts{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;justify-content:center}
+        .footer-contacts a{color:var(--text-muted);text-decoration:none;font-size:.75rem;transition:.2s}
+        .footer-contacts a:hover{color:var(--accent)}
+        .footer-copyright{text-align:center;font-size:.6rem;color:var(--text-muted);margin-top:.8rem;border-top:.5px solid var(--card-border);padding-top:.6rem}
+        .help-btn-red{background-color:var(--accent);border:none;color:white;padding:.6rem 1.2rem;border-radius:40px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;margin-bottom:1rem;box-shadow:var(--shadow-sm)}
+        .help-btn-red:hover{background-color:#8C644A;transform:scale(1.01);box-shadow:var(--shadow-md)}
+        .credits{font-size:.6rem;color:var(--text-muted)}
+        .floating-mixer{position:fixed;bottom:2rem;right:2rem;width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:white;box-shadow:0 4px 15px rgba(0,0,0,0.2);transition:transform .2s;z-index:1000}
+        .floating-mixer:hover{transform:scale(1.05);background:#8C644A}
+        body.dark .floating-mixer{background:#C9A87C}
+        body.dark .floating-mixer:hover{background:#B08B62}
+        .mixer-modal{position:fixed;bottom:6rem;right:2rem;width:280px;background:var(--card-bg);border-radius:1.5rem;border:1px solid var(--card-border);box-shadow:var(--shadow-md);padding:1rem;z-index:1001;display:none;backdrop-filter:blur(8px)}
+        .mixer-modal.active{display:block}
+        .mixer-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;font-weight:600;color:var(--text)}
+        .mixer-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-muted)}
+        .mixer-sound-item{display:flex;align-items:center;margin-bottom:.8rem;gap:.5rem}
+        .mixer-sound-name{width:65px;font-size:.85rem;font-weight:600;color:var(--text);cursor:pointer;transition:.2s}
+        .mixer-sound-name.active{color:var(--accent)}
+        .mixer-sound-name:hover{color:var(--accent)}
+        .mixer-slider{flex:1;height:4px;-webkit-appearance:none;background:var(--slider-bg);border-radius:4px}
+        .mixer-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--slider-thumb);border-radius:50%;cursor:pointer}
+        .mixer-value{font-size:.7rem;color:var(--text-muted);width:35px;text-align:center}
+        .mixer-btn{width:100%;background:var(--btn-bg);border:none;border-radius:40px;padding:.3rem;font-size:.7rem;font-weight:500;color:var(--btn-text);cursor:pointer;margin-top:.5rem}
+        .mixer-btn:hover{background:var(--btn-active)}
+        @media(max-width:650px){.cloud-letter{font-size:2.4rem}.logo-wrapper{gap:.1rem}.theme-switch{top:1rem;right:1rem;font-size:.7rem;padding:4px 10px}.floating-mixer{width:48px;height:48px;font-size:1.5rem;bottom:1.5rem;right:1.5rem}.mixer-modal{width:260px;right:.5rem;bottom:5rem}.save-btn{width:40px;height:40px;font-size:1.7rem}.listen-link{font-size:.6rem;padding:.2rem .4rem;white-space:normal}.audiobook-links{gap:.3rem}}
+    </style>
+</head>
+<body>
+<button class="theme-switch" id="themeToggle">тёмная тема</button>
+<button class="floating-mixer" id="floatingMixerBtn">🎧</button>
+<div class="mixer-modal" id="mixerModal">
+    <div class="mixer-header"><span>настрой шум</span><button class="mixer-close" id="mixerCloseBtn">✕</button></div>
+    <div id="mixerSoundsList"></div>
+    <button class="mixer-btn" id="muteAllBtn">выключить звуки</button>
+</div>
+<div class="container">
+    <a href="index.html" class="logo-link"><div class="logo-wrapper"><span class="cloud-letter">в</span><span class="cloud-letter">а</span><span class="cloud-letter">й</span><span class="cloud-letter">б</span><span class="cloud-letter">и</span><span class="cloud-letter">к</span></div></a>
+    <div class="tagline">убежище. здесь тихо</div>
+    <div class="nav-links"><a href="films.html" class="nav-link">фильмы</a><a href="books.html" class="nav-link">книги</a><a href="audiobooks.html" class="nav-link">аудиокниги</a><a href="music.html" class="nav-link">музыка</a></div>
+    <div class="filters-section"><div class="filters-label">подобрать по состоянию</div><div class="filters-grid" id="filtersGrid"><button class="filter-btn active" data-filter="all">все</button><button class="filter-btn" data-filter="trevoga">тревога</button><button class="filter-btn" data-filter="grust">грусть</button><button class="filter-btn" data-filter="gnev">злость</button><button class="filter-btn" data-filter="pusto">пустота</button><button class="filter-btn" data-filter="odin">одиночество</button></div></div>
+    <div class="audiobooks-grid" id="audiobooksGrid"></div>
+</div>
+<div class="site-footer">
+    <div class="footer-content"><div class="footer-about"><strong>Вайбик</strong> — тихое пространство, где можно побыть с собой. Здесь не лечат, не оценивают, не советуют. Просто звуки, кино, книги и атмосфера.</div><div class="footer-contacts"><a href="#" id="contactEmail">hello@vaibik.ru</a><a href="https://t.me/vaibik_project" target="_blank" id="contactTelegram">telegram</a><a href="https://www.instagram.com/vaibik.project" target="_blank" id="contactInstagram">instagram</a></div></div>
+    <div class="footer-copyright"><button class="help-btn-red" id="helpBtn">если очень плохо — помощь</button><div class="credits">все чувства имеют значение</div></div>
+</div>
+<script>
+const soundsList=[{name:'дождь',key:'rain',url:'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20(2).mp3'},{name:'костёр',key:'fire',url:'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BA%D0%BE%D1%81%D1%82%D0%B5%D1%80.mp3'},{name:'море',key:'sea',url:'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BC%D0%BE%D1%80%D0%B5.mp3'},{name:'ветер',key:'wind',url:'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BB%D0%B5%D1%81.mp3'},{name:'гроза',key:'storm',url:'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B3%D1%80%D0%BE%D0%B7%D0%B0.mp3'}];
+let audioElements={},activeStates={},volumes={};
+soundsList.forEach(sound=>{activeStates[sound.key]=false;volumes[sound.key]=0.4;audioElements[sound.key]=new Audio(sound.url);audioElements[sound.key].loop=true;audioElements[sound.key].volume=volumes[sound.key];audioElements[sound.key].load();});
+function loadSoundSettings(){try{let v=localStorage.getItem('vaibik_sound_volumes');if(v)Object.assign(volumes,JSON.parse(v));let a=localStorage.getItem('vaibik_sound_active');if(a)Object.assign(activeStates,JSON.parse(a));for(let k in volumes)if(audioElements[k])audioElements[k].volume=volumes[k];for(let k in activeStates)if(activeStates[k]&&audioElements[k])audioElements[k].play().catch(e=>console.warn(e));}catch(e){}}
+function saveSoundSettings(){localStorage.setItem('vaibik_sound_volumes',JSON.stringify(volumes));localStorage.setItem('vaibik_sound_active',JSON.stringify(activeStates));}
+function updateMixerUI(){let c=document.getElementById('mixerSoundsList');if(!c)return;c.innerHTML='';soundsList.forEach(sound=>{let div=document.createElement('div');div.className='mixer-sound-item';div.innerHTML=`<span class="mixer-sound-name ${activeStates[sound.key]?'active':''}" data-key="${sound.key}">${sound.name}</span><input type="range" class="mixer-slider" data-key="${sound.key}" min="0" max="100" step="1" value="${Math.round(volumes[sound.key]*100)}"><span class="mixer-value">${Math.round(volumes[sound.key]*100)}%</span>`;c.appendChild(div);});document.querySelectorAll('.mixer-sound-name').forEach(el=>{let k=el.dataset.key;el.addEventListener('click',e=>{e.stopPropagation();if(activeStates[k]){audioElements[k].pause();activeStates[k]=false;el.classList.remove('active');}else{audioElements[k].play().catch(e=>console.warn(e));activeStates[k]=true;el.classList.add('active');}saveSoundSettings();updateMixerUI();});});document.querySelectorAll('.mixer-slider').forEach(slider=>{slider.addEventListener('input',e=>{let k=slider.dataset.key;let val=parseInt(e.target.value)/100;volumes[k]=val;if(audioElements[k])audioElements[k].volume=val;slider.nextElementSibling.innerText=e.target.value+'%';saveSoundSettings();});});}
+function muteAllSounds(){for(let k in audioElements)if(activeStates[k]){audioElements[k].pause();activeStates[k]=false;}saveSoundSettings();updateMixerUI();}
+let modal=document.getElementById('mixerModal');document.getElementById('floatingMixerBtn').addEventListener('click',()=>{modal.classList.toggle('active');updateMixerUI();});document.getElementById('mixerCloseBtn').addEventListener('click',()=>modal.classList.remove('active'));document.getElementById('muteAllBtn').addEventListener('click',muteAllSounds);loadSoundSettings();
+
+let audiobooks=[
+{id:101,title:"Элеанор Олифант в полном порядке",author:"Гейл Ханимен",year:2017,desc:"Тонкий, глубокий, наполненный изящным юмором роман о дружбе, одиночестве, любви.",tags:["драма","психологическая"],states:["trevoga","odin"],trogaet:4,sogrevaet:8,coverUrl:"https://i.ibb.co/0VWvKyMX/image.jpg",litresUrl:"https://www.litres.ru/audiobook/geyl-hanimen/eleanor-olifant-v-polnom-poryadke-67754718/",bookmateUrl:""},
+{id:102,title:"Маленький принц",author:"Антуан де Сент-Экзюпери",year:1943,desc:"Мудрая и человечная сказка-притча о дружбе, любви, долге и верности.",tags:["философская сказка"],states:["trevoga","grust"],trogaet:5,sogrevaet:7,coverUrl:"https://i.ibb.co/TBkGBbZJ/image.jpg",litresUrl:"",bookmateUrl:"https://rus.bookmate.com/audiobooks/X5tb1bpW"},
+{id:103,title:"Над пропастью во ржи",author:"Джером Сэлинджер",year:1951,desc:"Честная, грубая, уставшая книга о том, как не вписаться в систему.",tags:["классика","подростковая"],states:["odin","gnev"],trogaet:6,sogrevaet:4,coverUrl:"https://i.ibb.co/TB5Z06hW/image.webp",litresUrl:"",bookmateUrl:"https://rus.bookmate.com/audiobooks/VmweC7Pe"},
+{id:104,title:"Цветы для Элджернона",author:"Дэниел Киз",year:1959,desc:"Очень тяжёлая книга о том, что разум не равен счастью.",tags:["научная фантастика","драма"],states:["pusto","grust"],trogaet:9,sogrevaet:3,coverUrl:"https://i.ibb.co/dvS57DY/image.jpg",litresUrl:"https://www.litres.ru/audiobook/deniel-kiz/cvety-dlya-eldzhernona-51927863/",bookmateUrl:""},
+{id:105,title:"Убить пересмешника",author:"Харпер Ли",year:1960,desc:"О детстве, расизме, справедливости.",tags:["классика","социальная"],states:["grust","odin"],trogaet:7,sogrevaet:6,coverUrl:"https://i.ibb.co/9HcLFN6b/image.webp",litresUrl:"",bookmateUrl:"https://hr.bookmate.com/audiobooks/zN9qWJUK"},
+{id:106,title:"Книжный вор",author:"Маркус Зузак",year:2005,desc:"Вторая мировая глазами девочки, которая крадёт книги.",tags:["исторический","драма"],states:["grust","pusto"],trogaet:8,sogrevaet:5,coverUrl:"https://i.ibb.co/Q7djKQQY/image.webp",litresUrl:"https://litres.com/audiobook/markus-zusak/knizhnyy-vor-105623203/",bookmateUrl:""},
+{id:107,title:"Не навреди",author:"Генри Марш",year:2014,desc:"Мемуары нейрохирурга о том, как принимать невозможные решения.",tags:["биография","медицина"],states:["odin","pusto"],trogaet:6,sogrevaet:4,coverUrl:"https://i.ibb.co/C3HNJRFS/image.webp",litresUrl:"",bookmateUrl:""},
+{id:108,title:"Солярис",author:"Станислав Лем",year:1961,desc:"Философская фантастика о невозможности понять другого.",tags:["научная фантастика","философский"],states:["pusto","odin"],trogaet:7,sogrevaet:2,coverUrl:"https://i.ibb.co/DDLBy47N/image.jpg",litresUrl:"",bookmateUrl:"https://rus.bookmate.com/audiobooks/wZbOrGGR"},
+{id:109,title:"Понедельник начинается в субботу",author:"братья Стругацкие",year:1965,desc:"Весёлая умная сказка для взрослых о научных сотрудниках.",tags:["фантастика","юмор"],states:["gnev","pusto"],trogaet:2,sogrevaet:7,coverUrl:"https://i.ibb.co/SzWkCT7/image.jpg",litresUrl:"",bookmateUrl:"https://es.bookmate.com/audiobooks/OePw3RG1"},
+{id:110,title:"Дом, в котором…",author:"Мариам Петросян",year:2009,desc:"Огромный роман об интернате для детей-инвалидов.",tags:["психологическая драма","мистика"],states:["odin","grust"],trogaet:8,sogrevaet:6,coverUrl:"https://i.ibb.co/gMcpHSky/image.webp",litresUrl:"",bookmateUrl:""},
+{id:111,title:"Тысяча сияющих солнц",author:"Халед Хоссейни",year:2007,desc:"Пронзительная история о женщинах в Афганистане.",tags:["драма","исторический"],states:["odin","grust"],trogaet:9,sogrevaet:4,coverUrl:"https://i.ibb.co/n83k1B8v/image.jpg",litresUrl:"",bookmateUrl:"https://bg.bookmate.com/audiobooks/sGD02nSm"},
+{id:112,title:"Искупление",author:"Иэн Макьюэн",year:2001,desc:"Ложь, разрушившая жизни, и попытка искупления.",tags:["драма","военный"],states:["odin","grust"],trogaet:8,sogrevaet:3,coverUrl:"https://i.ibb.co/qMxtds82/image.jpg",litresUrl:"",bookmateUrl:""},
+{id:113,title:"451° по Фаренгейту",author:"Рэй Брэдбери",year:1953,desc:"Антиутопия о цене знаний и свободы.",tags:["антиутопия","классика"],states:["odin","gnev"],trogaet:7,sogrevaet:4,coverUrl:"https://i.ibb.co/d4fmXLCs/451.jpg",litresUrl:"https://www.litres.ru/audiobook/rey-bredberi/451-gradus-po-farengeytu-13065252/",bookmateUrl:""},
+{id:114,title:"Сто лет одиночества",author:"Габриэль Гарсиа Маркес",year:1967,desc:"Магический реализм и история семьи Буэндиа.",tags:["магический реализм","классика"],states:["odin","pusto"],trogaet:6,sogrevaet:5,coverUrl:"https://i.ibb.co/xtQ3Fjjz/image.webp",litresUrl:"https://litres.com/audiobook/gabriel-garsia-markes/sto-let-odinochestva-39324563/",bookmateUrl:""},
+{id:115,title:"Портрет Дориана Грея",author:"Оскар Уайльд",year:1890,desc:"О красоте, тщеславии и ужасе перед старостью.",tags:["философский","классика"],states:["odin","trevoga"],trogaet:5,sogrevaet:3,coverUrl:"https://i.ibb.co/zv8KNnV/image.webp",litresUrl:"https://www.litres.ru/audiobook/oskar-uayld/portret-doriana-greya-205678/",bookmateUrl:"https://bg.bookmate.com/audiobooks/HYNHyKJw"},
+{id:116,title:"Норвежский лес",author:"Харуки Мураками",year:1987,desc:"Тихая ностальгия, любовь и потеря.",tags:["роман","драма"],states:["odin","grust"],trogaet:8,sogrevaet:5,coverUrl:"https://i.ibb.co/jvTXmD97/image.jpg",litresUrl:"",bookmateUrl:""},
+{id:117,title:"Алхимик",author:"Пауло Коэльо",year:1988,desc:"Притча о следовании мечте.",tags:["притча","философский"],states:["odin","pusto"],trogaet:4,sogrevaet:8,coverUrl:"https://i.ibb.co/fdnWqdG0/image.webp",litresUrl:"",bookmateUrl:""},
+{id:118,title:"Война и мир",author:"Лев Толстой",year:1869,desc:"Всё человеческое, от мира в семье до истории целой страны.",tags:["исторический","классика"],states:["pusto","grust"],trogaet:7,sogrevaet:5,coverUrl:"https://i.ibb.co/gb0H1htq/image.jpg",litresUrl:"",bookmateUrl:""},
+{id:119,title:"Преступление и наказание",author:"Фёдор Достоевский",year:1866,desc:"Диалог о вине, наказании и искуплении.",tags:["классика","психологический"],states:["pusto","gnev"],trogaet:9,sogrevaet:2,coverUrl:"https://i.ibb.co/6cw3vRxh/image.jpg",litresUrl:"",bookmateUrl:"https://bookmate.com/audiobooks/ndSOxnQY"},
+{id:120,title:"Мартин Иден",author:"Джек Лондон",year:1909,desc:"Трагедия художника, который не нашёл своего места.",tags:["классика","роман"],states:["pusto","gnev"],trogaet:8,sogrevaet:3,coverUrl:"https://i.ibb.co/GQnjVLnG/image.webp",litresUrl:"",bookmateUrl:"https://rus.bookmate.com/audiobooks/pCbXDx6z"},
+{id:121,title:"Три товарища",author:"Эрих Мария Ремарк",year:1936,desc:"Дружба, любовь и жизнь между войнами.",tags:["роман","драма"],states:["grust","odin"],trogaet:7,sogrevaet:6,coverUrl:"https://i.ibb.co/BVQJDZts/image.webp",litresUrl:"",bookmateUrl:"https://bg.bookmate.com/audiobooks/3uSceS9T"},
+{id:122,title:"Бог всегда путешествует инкогнито",author:"Лоран Гунель",year:2010,desc:"Бестселлер о том, как спасти свою жизнь, следуя странным указаниям.",tags:["современная проза","мотивация"],states:["grust","pusto"],trogaet:7,sogrevaet:7,coverUrl:"https://i.ibb.co/dJKTK3Lt/image.webp",litresUrl:"",bookmateUrl:"https://en.bookmate.com/audiobooks/MHr38JVg"},
+{id:123,title:"День, когда я научился жить",author:"Лоран Гунель",year:2014,desc:"Встречи, странствия и приключения меняют видение жизни.",tags:["современная проза","мотивация"],states:["grust","pusto"],trogaet:6,sogrevaet:8,coverUrl:"https://i.ibb.co/8LVYtfpk/image.jpg",litresUrl:"",bookmateUrl:"https://tr.bookmate.com/books/VAocfz4T"},
+{id:124,title:"Скотный двор",author:"Джордж Оруэлл",year:1945,desc:"Сатира на тоталитаризм.",tags:["антиутопия","сатира"],states:["gnev","pusto"],trogaet:6,sogrevaet:2,coverUrl:"https://i.ibb.co/xS63FKZr/image.webp",litresUrl:"",bookmateUrl:"https://rus.bookmate.com/audiobooks/xLmMq7C9"},
+{id:125,title:"Девушка с жемчужной серёжкой",author:"Трейси Шевалье",year:1999,desc:"История картины Вермеера через вымысел.",tags:["исторический","роман"],states:["odin","grust"],trogaet:5,sogrevaet:6,coverUrl:"https://i.ibb.co/v652s8yn/image.webp",litresUrl:"https://www.litres.ru/audiobook/treysi-shevale/devushka-s-zhemchuzhnoy-serezhkoy-101217164/",bookmateUrl:""},
+{id:126,title:"Дневник Анны Франк",author:"Анна Франк",year:1947,desc:"Реальный дневник девочки, прячущейся от нацистов.",tags:["биография","исторический"],states:["odin","grust"],trogaet:9,sogrevaet:3,coverUrl:"https://i.ibb.co/sdzhzbYb/image.webp",litresUrl:"https://www.litres.ru/audiobook/anna-frank/dnevnik-anny-frank-130274/",bookmateUrl:"https://rus.bookmate.com/audiobooks/gPhQo7G0"},
+{id:127,title:"Чтец",author:"Бернхард Шлинк",year:1995,desc:"О любви, стыде и послевоенной Германии.",tags:["драма","военный"],states:["odin","grust"],trogaet:8,sogrevaet:4,coverUrl:"https://i.ibb.co/7x1jGqRN/image.jpg",litresUrl:"",bookmateUrl:""},
+{id:128,title:"Бегущий за ветром",author:"Халед Хоссейни",year:2003,desc:"Дружба, предательство и искупление в Афганистане.",tags:["драма","исторический"],states:["odin","grust"],trogaet:9,sogrevaet:5,coverUrl:"https://i.ibb.co/93tqyYZZ/image.webp",litresUrl:"https://litres.de/audiobook/haled-hosseyni/beguschiy-za-vetrom-14475682/",bookmateUrl:"https://bookmate.com/audiobooks/9WHfqY8I"},
+{id:129,title:"Под куполом",author:"Стивен Кинг",year:2009,desc:"Невидимый купол отрезает город от мира. Социальный эксперимент.",tags:["фантастика","триллер"],states:["odin","gnev"],trogaet:7,sogrevaet:2,coverUrl:"https://i.ibb.co/HDf9D3fL/image.jpg",litresUrl:"https://www.litres.ru/audiobook/stiven-king/pod-kupolom-4666329/",bookmateUrl:""},
+{id:130,title:"Евгений Онегин",author:"Александр Пушкин",year:1833,desc:"Роман в стихах о скуке, любви и неслучившемся счастье.",tags:["классика","роман в стихах"],states:["odin","grust"],trogaet:5,sogrevaet:4,coverUrl:"https://i.ibb.co/tTwc5Jyy/image.jpg",litresUrl:"https://www.litres.ru/audiobook/aleksandr-pushkin/evgeniy-onegin-8994570/",bookmateUrl:"https://en.bookmate.com/audiobooks/kN0FzBwk"}];
+let savedAudiobooks=JSON.parse(localStorage.getItem('vaibik_saved_audiobooks')||'[]');
+function saveAudiobook(id){if(!savedAudiobooks.includes(id)){savedAudiobooks.push(id);localStorage.setItem('vaibik_saved_audiobooks',JSON.stringify(savedAudiobooks));}}
+function unsaveAudiobook(id){savedAudiobooks=savedAudiobooks.filter(bid=>bid!==id);localStorage.setItem('vaibik_saved_audiobooks',JSON.stringify(savedAudiobooks));}
+function isSaved(id){return savedAudiobooks.includes(id);}
+function renderAudiobooks(filterState="all"){let c=document.getElementById("audiobooksGrid");c.innerHTML="";let filtered=audiobooks.filter(b=>filterState==="all"||b.states.includes(filterState));filtered.forEach(book=>{let card=document.createElement("div");card.className="audiobook-card";let saved=isSaved(book.id);let coverHtml=book.coverUrl?`<img src="${book.coverUrl}" alt="${book.title}" loading="lazy">`:`<div class="audiobook-cover-placeholder">${book.title}<br>🎧</div>`;let tagsHtml=book.tags.map(tag=>`<span class="audiobook-tag">${tag}</span>`).join('');let listenButtons='';if(book.litresUrl)listenButtons+=`<a href="${book.litresUrl}" target="_blank" class="listen-link">Литрес</a>`;if(book.bookmateUrl)listenButtons+=`<a href="${book.bookmateUrl}" target="_blank" class="listen-link">Bookmate</a>`;card.innerHTML=`<button class="save-btn ${saved?'saved':''}" data-id="${book.id}"><span>♥</span></button><div class="audiobook-cover">${coverHtml}</div><div class="audiobook-title">${book.title}</div><div class="audiobook-author">${book.author}</div><div class="audiobook-tags">${tagsHtml}</div><div class="audiobook-desc">${book.desc}</div><div class="audiobook-ratings"><div class="rating-item"><span class="rating-label">Трогает</span><div class="rating-bar"><div class="rating-fill trogaet" style="width:${book.trogaet*10}%;"></div></div><span class="rating-value">${book.trogaet}/10</span></div><div class="rating-item"><span class="rating-label">Согревает</span><div class="rating-bar"><div class="rating-fill sogrevaet" style="width:${book.sogrevaet*10}%;"></div></div><span class="rating-value">${book.sogrevaet}/10</span></div></div><div class="audiobook-links">${listenButtons}</div>`;c.appendChild(card);});document.querySelectorAll('.save-btn').forEach(btn=>{btn.addEventListener('click',(e)=>{e.stopPropagation();let id=parseInt(btn.dataset.id);if(btn.classList.contains('saved')){unsaveAudiobook(id);btn.classList.remove('saved');}else{saveAudiobook(id);btn.classList.add('saved');}});});}
+function initFilters(){let btns=document.querySelectorAll(".filter-btn");btns.forEach(btn=>{btn.addEventListener("click",()=>{btns.forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderAudiobooks(btn.getAttribute("data-filter"));});});}
+function initTheme(){let st=localStorage.getItem('vaibik_theme');let tb=document.getElementById('themeToggle');if(st==='dark'){document.body.classList.add('dark');tb.innerText='светлая тема';}else{document.body.classList.remove('dark');tb.innerText='тёмная тема';}}
+function toggleTheme(){let tb=document.getElementById('themeToggle');if(document.body.classList.contains('dark')){document.body.classList.remove('dark');localStorage.setItem('vaibik_theme','light');tb.innerText='тёмная тема';}else{document.body.classList.add('dark');localStorage.setItem('vaibik_theme','dark');tb.innerText='светлая тема';}}
+document.getElementById('helpBtn').onclick=()=>window.location.href='help.html';
+document.getElementById('contactEmail').onclick=()=>alert('Скопируйте адрес: hello@vaibik.ru');
+document.getElementById('contactTelegram').onclick=()=>window.open('https://t.me/vaibik_project','_blank');
+document.getElementById('contactInstagram').onclick=()=>window.open('https://www.instagram.com/vaibik.project','_blank');
+initFilters();renderAudiobooks();initTheme();document.getElementById('themeToggle').addEventListener('click',toggleTheme);
+</script>
+</body>
+</html>

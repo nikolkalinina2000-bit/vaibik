@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Вайбик — мне одиноко</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=3">
+    <link rel="shortcut icon" href="/favicon.png?v=3">
+    <link rel="apple-touch-icon" href="/favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        :root { --bg: #F2EFE9; --text: #4A3729; --text-muted: #7A5E4A; --card-bg: #FFFFFF; --card-border: #E2D4C8; --btn-bg: #FFFFFF; --btn-active: #DBC8B5; --btn-text: #4A3729; --accent: #A87B5A; --footer-bg: rgba(255, 250, 240, 0.7); --slider-bg: #DCCCB9; --slider-thumb: #A87B5A; --muted: #7A5E4A; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.08); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.1); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.12); }
+        body.dark { --bg: #2A241E; --text: #F0E2D4; --text-muted: #C5B19B; --card-bg: #3D3228; --card-border: #5E4E3E; --btn-bg: #3D3228; --btn-active: #5E4B38; --btn-text: #E0D4C8; --accent: #C9A87C; --footer-bg: rgba(30, 25, 22, 0.8); --slider-bg: #5E4E3E; --slider-thumb: #C9A87C; --muted: #C5B19B; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.3); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.4); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.5); }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; padding: 1.5rem 1.5rem 0; min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; position: relative; }
+        body::before { content: ""; position: fixed; top: -15%; left: -15%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(180, 140, 100, 0.15), transparent 70%); border-radius: 50%; filter: blur(100px); z-index: 0; pointer-events: none; }
+        body::after { content: ""; position: fixed; bottom: -15%; right: -15%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(140, 100, 70, 0.12), transparent 70%); border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; }
+        body.dark::before { background: radial-gradient(circle, rgba(100, 80, 60, 0.25), transparent 70%); }
+        body.dark::after { background: radial-gradient(circle, rgba(80, 60, 40, 0.2), transparent 70%); }
+        .container { max-width: 1200px; margin: 0 auto; flex: 1; position: relative; z-index: 2; text-align: center; padding-bottom: 2rem; }
+        .theme-switch { position: fixed; top: 1.5rem; right: 1.5rem; background: var(--btn-bg); border: 1px solid var(--card-border); font-size: 0.8rem; font-weight: 500; color: var(--muted); cursor: pointer; z-index: 100; transition: 0.2s; font-family: 'Quicksand', sans-serif; padding: 6px 14px; border-radius: 30px; backdrop-filter: blur(4px); box-shadow: var(--shadow-sm); }
+        .theme-switch:hover { color: var(--text); background: var(--btn-active); transform: translateY(-2px); }
+        
+        .logo-link { text-decoration: none; display: block; }
+        .logo-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 0.15rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .cloud-letter { display: inline-block; font-size: 4rem; font-weight: 600; background: linear-gradient(135deg, #E6D0B5, #B5875A); background-clip: text; -webkit-background-clip: text; color: transparent; margin: 0; padding: 0; transition: all 0.2s ease; animation: float 3s infinite ease-in-out; text-shadow: 0 0 12px rgba(139, 90, 43, 0.2), 0 0 20px rgba(139, 90, 43, 0.1); filter: blur(0.3px); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        .cloud-letter:hover { transform: translateY(-8px); filter: blur(0px); text-shadow: 0 0 18px rgba(139, 90, 43, 0.3); }
+        
+        .tagline { text-align: center; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 4px; margin-bottom: 1.5rem; }
+        .nav-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .nav-link { background: transparent; border: none; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.2s; text-decoration: none; padding: 0.2rem 0; border-bottom: 1px dashed transparent; }
+        .nav-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        
+        h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); letter-spacing: -0.5px; }
+        .sub { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem; }
+        
+        .support-counter-block {
+            background: var(--footer-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            margin: 1rem auto;
+            max-width: 500px;
+            border: 1px solid var(--card-border);
+            transition: 0.2s;
+        }
+        .support-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .support-btn:hover {
+            background: #8C644A;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .support-message {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.8rem;
+            min-height: 4rem;
+        }
+        .counter-text {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+            background: var(--card-bg);
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            margin-top: 0.5rem;
+        }
+        
+        .content-selection {
+            margin: 2rem auto;
+            background: var(--footer-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            max-width: 600px;
+        }
+        .selection-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        .selection-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .selection-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            text-align: center;
+            transition: 0.2s;
+            border: 1px solid var(--card-border);
+            text-decoration: none;
+            color: var(--text);
+            min-width: 70px;
+        }
+        .selection-card:hover {
+            transform: translateY(-2px);
+            background: var(--btn-active);
+            box-shadow: var(--shadow-sm);
+        }
+        .selection-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .lonely-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin: 2rem 0; }
+        .practice-card, .support-card { background: var(--footer-bg); backdrop-filter: blur(8px); border-radius: 2rem; padding: 1.2rem; width: 100%; max-width: 400px; border: 1px solid var(--card-border); text-align: center; }
+        .card-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .practice-text { font-size: 1rem; font-weight: 500; margin-bottom: 1rem; color: var(--text); }
+        .refresh-btn { background: var(--btn-bg); border: 1px solid var(--card-border); border-radius: 40px; padding: 0.3rem 1.2rem; font-size: 0.7rem; cursor: pointer; transition: 0.2s; }
+        .refresh-btn:hover { background: var(--btn-active); transform: translateY(-2px); }
+        .support-text { font-size: 0.95rem; font-style: italic; line-height: 1.4; margin-bottom: 0.5rem; color: var(--text); }
+        
+        .back-link { display: inline-block; margin-top: 1rem; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; border-bottom: 1px dashed var(--card-border); }
+        .back-link:hover { color: var(--accent); }
+        
+        .floating-mixer-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background 0.2s;
+            z-index: 200;
+        }
+        .floating-mixer-btn:hover { transform: scale(1.05); background: #8C644A; }
+        body.dark .floating-mixer-btn { background: #C9A87C; }
+        body.dark .floating-mixer-btn:hover { background: #B08B62; }
+
+        .mixer-modal {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 280px;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-md);
+            padding: 1rem;
+            z-index: 201;
+            display: none;
+            backdrop-filter: blur(8px);
+        }
+        .mixer-modal.active { display: block; }
+        .mixer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .mixer-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .mixer-sound-item { display: flex; align-items: center; margin-bottom: 0.8rem; gap: 0.5rem; }
+        .mixer-sound-name { width: 65px; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer; transition: 0.2s; }
+        .mixer-sound-name.active { color: var(--accent); }
+        .mixer-sound-name:hover { color: var(--accent); }
+        .mixer-slider { flex: 1; height: 4px; -webkit-appearance: none; background: var(--slider-bg); border-radius: 4px; }
+        .mixer-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--slider-thumb); border-radius: 50%; cursor: pointer; }
+        .mixer-value { font-size: 0.7rem; color: var(--text-muted); width: 35px; text-align: center; }
+        .mixer-btn { width: 100%; background: var(--btn-bg); border: none; border-radius: 40px; padding: 0.3rem; font-size: 0.7rem; font-weight: 500; color: var(--btn-text); cursor: pointer; margin-top: 0.5rem; }
+        .mixer-btn:hover { background: var(--btn-active); }
+        
+        @media (max-width: 650px) { 
+            .cloud-letter { font-size: 2.4rem; } 
+            .logo-wrapper { gap: 0.1rem; } 
+            .theme-switch { top: 1rem; right: 1rem; font-size: 0.7rem; padding: 4px 10px; } 
+            .floating-mixer-btn { width: 48px; height: 48px; font-size: 1.5rem; bottom: 1.5rem; right: 1.5rem; } 
+            .mixer-modal { width: 260px; right: 0.5rem; bottom: 5rem; } 
+            .selection-card { padding: 0.3rem 0.6rem; min-width: 60px; }
+            .selection-label { font-size: 0.7rem; }
+            .support-btn { font-size: 1rem; padding: 0.6rem 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<button class="theme-switch" id="themeToggle">тёмная тема</button>
+<button class="floating-mixer-btn" id="floatingMixerBtn">🎧</button>
+<div class="mixer-modal" id="mixerModal">
+    <div class="mixer-header">
+        <span>настрой шум</span>
+        <button class="mixer-close" id="mixerCloseBtn">✕</button>
+    </div>
+    <div id="mixerSoundsList"></div>
+    <button class="mixer-btn" id="muteAllBtn">выключить звуки</button>
+</div>
+
+<div class="container">
+    <a href="index.html" class="logo-link">
+        <div class="logo-wrapper">
+            <span class="cloud-letter">в</span><span class="cloud-letter">а</span><span class="cloud-letter">й</span>
+            <span class="cloud-letter">б</span><span class="cloud-letter">и</span><span class="cloud-letter">к</span>
+        </div>
+    </a>
+    <div class="tagline">убежище. здесь тихо</div>
+
+    <div class="nav-links">
+        <a href="films.html" class="nav-link">фильмы</a>
+        <a href="books.html" class="nav-link">книги</a>
+        <a href="audiobooks.html" class="nav-link">аудиокниги</a>
+        <a href="music.html" class="nav-link">музыка</a>
+    </div>
+
+    <h1>мне одиноко</h1>
+    <div class="sub">ты не один(а) — здесь есть поддержка</div>
+
+    <div class="support-counter-block">
+        <button class="support-btn" id="lonelySupportBtn">🤍 мне одиноко</button>
+        <div class="support-message" id="lonelySupportMessage">нажми на кнопку, чтобы получить поддержку</div>
+        <div class="counter-text" id="lonelyCounter"></div>
+    </div>
+
+    <div class="content-selection">
+        <div class="selection-title">Что может помочь, когда одиноко</div>
+        <div class="selection-grid">
+            <a href="films.html?mood=lonely" class="selection-card">
+                <span class="selection-label">фильмы</span>
+            </a>
+            <a href="books.html?mood=lonely" class="selection-card">
+                <span class="selection-label">книги</span>
+            </a>
+            <a href="audiobooks.html?mood=lonely" class="selection-card">
+                <span class="selection-label">аудиокниги</span>
+            </a>
+            <a href="music.html?mood=lonely" class="selection-card">
+                <span class="selection-label">музыка</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="lonely-tools">
+        <div class="practice-card">
+            <div class="card-title">заземление</div>
+            <div class="practice-text" id="lonelyPractice">Положи руку на сердце, почувствуй его тепло.</div>
+            <button class="refresh-btn" id="nextLonelyPracticeBtn">другая практика</button>
+        </div>
+        <div class="support-card">
+            <div class="card-title">поддержка</div>
+            <div class="support-text" id="lonelySupport">Одиночество не равно покинутости. Ты важен(на) сам(а) по себе.</div>
+            <button class="refresh-btn" id="nextLonelySupportBtn">другая поддержка</button>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-link">вернуться на главную</a>
+</div>
+
+<script>
+    const soundsList = [
+        { name: 'дождь', key: 'rain', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20(2).mp3' },
+        { name: 'костёр', key: 'fire', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BA%D0%BE%D1%81%D1%82%D0%B5%D1%80.mp3' },
+        { name: 'море', key: 'sea', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BC%D0%BE%D1%80%D0%B5.mp3' },
+        { name: 'лес', key: 'forest', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BB%D0%B5%D1%81.mp3' },
+        { name: 'гроза', key: 'storm', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B3%D1%80%D0%BE%D0%B7%D0%B0.mp3' }
+    ];
+    let audioElements = {}, activeStates = {}, volumes = {};
+    soundsList.forEach(sound => {
+        activeStates[sound.key] = false;
+        volumes[sound.key] = 0.4;
+        audioElements[sound.key] = new Audio(sound.url);
+        audioElements[sound.key].loop = true;
+        audioElements[sound.key].volume = volumes[sound.key];
+        audioElements[sound.key].load();
+    });
+    function loadSoundSettings() {
+        try {
+            const savedVolumes = localStorage.getItem('vaibik_sound_volumes');
+            if (savedVolumes) Object.assign(volumes, JSON.parse(savedVolumes));
+            const savedActive = localStorage.getItem('vaibik_sound_active');
+            if (savedActive) Object.assign(activeStates, JSON.parse(savedActive));
+            for (let key in volumes) if (audioElements[key]) audioElements[key].volume = volumes[key];
+            for (let key in activeStates) if (activeStates[key] && audioElements[key]) audioElements[key].play().catch(e => console.warn(e));
+        } catch(e) {}
+    }
+    function saveSoundSettings() {
+        localStorage.setItem('vaibik_sound_volumes', JSON.stringify(volumes));
+        localStorage.setItem('vaibik_sound_active', JSON.stringify(activeStates));
+    }
+    function updateMixerUI() {
+        const container = document.getElementById('mixerSoundsList');
+        if (!container) return;
+        container.innerHTML = '';
+        soundsList.forEach(sound => {
+            const div = document.createElement('div');
+            div.className = 'mixer-sound-item';
+            div.innerHTML = `
+                <span class="mixer-sound-name ${activeStates[sound.key] ? 'active' : ''}" data-key="${sound.key}">${sound.name}</span>
+                <input type="range" class="mixer-slider" data-key="${sound.key}" min="0" max="100" step="1" value="${Math.round(volumes[sound.key] * 100)}">
+                <span class="mixer-value">${Math.round(volumes[sound.key] * 100)}%</span>
+            `;
+            container.appendChild(div);
+        });
+        document.querySelectorAll('.mixer-sound-name').forEach(el => {
+            const key = el.dataset.key;
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (activeStates[key]) {
+                    audioElements[key].pause();
+                    activeStates[key] = false;
+                    el.classList.remove('active');
+                } else {
+                    audioElements[key].play().catch(e => console.warn(e));
+                    activeStates[key] = true;
+                    el.classList.add('active');
+                }
+                saveSoundSettings();
+                updateMixerUI();
+            });
+        });
+        document.querySelectorAll('.mixer-slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const key = slider.dataset.key;
+                const val = parseInt(e.target.value) / 100;
+                volumes[key] = val;
+                if (audioElements[key]) audioElements[key].volume = val;
+                slider.nextElementSibling.innerText = e.target.value + '%';
+                saveSoundSettings();
+            });
+        });
+    }
+    function muteAllSounds() {
+        for (let key in audioElements) {
+            if (activeStates[key]) {
+                audioElements[key].pause();
+                activeStates[key] = false;
+            }
+        }
+        saveSoundSettings();
+        updateMixerUI();
+    }
+    const modal = document.getElementById('mixerModal');
+    const floatingBtn = document.getElementById('floatingMixerBtn');
+    const closeBtn = document.getElementById('mixerCloseBtn');
+    floatingBtn.addEventListener('click', () => {
+        modal.classList.toggle('active');
+        updateMixerUI();
+    });
+    closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    document.getElementById('muteAllBtn').addEventListener('click', muteAllSounds);
+    loadSoundSettings();
+
+    const supportMessages = [
+        "Ты не один(а). Даже если сейчас кажется, что весь мир отвернулся — это не так.",
+        "Одиночество — это не приговор. Это просто сигнал, что тебе нужно немного тепла.",
+        "Ты важен(на) и значим(а) просто потому, что ты есть.",
+        "Разреши себе чувствовать одиночество. Оно не вечно.",
+        "Многие люди сейчас чувствуют то же самое. Ты часть большой невидимой общности.",
+        "Обними себя за плечи. Ты справишься, я в тебя верю.",
+        "Одиночество — это время, когда можно стать ближе к самому себе.",
+        "Твои чувства имеют значение. И ты имеешь значение.",
+        "Даже в тишине есть отклик. Прислушайся — внутри тебя живёт свет.",
+        "Ты не один(а) в своей уязвимости. Это делает тебя человеком."
+    ];
+    const supportBtn = document.getElementById('lonelySupportBtn');
+    const supportMsgDiv = document.getElementById('lonelySupportMessage');
+    const counterDiv = document.getElementById('lonelyCounter');
+    
+    function getRandomSupport() {
+        return supportMessages[Math.floor(Math.random() * supportMessages.length)];
+    }
+    function getRandomCount() {
+        return Math.floor(Math.random() * (500 - 10 + 1) + 10);
+    }
+    function updateSupportAndCounter() {
+        const msg = getRandomSupport();
+        const count = getRandomCount();
+        supportMsgDiv.innerText = msg;
+        counterDiv.innerText = `сейчас ${count} человек испытывают то же самое. ты не один(а).`;
+    }
+    supportBtn.addEventListener('click', updateSupportAndCounter);
+    updateSupportAndCounter();
+
+    const lonelyPractices = [
+        "Положи руку на сердце, почувствуй его тепло.",
+        "Напиши письмо себе будущему: «Я справлюсь и буду счастлив(а)».",
+        "Позвони или напиши человеку, который тебе дорог. Скажи просто «привет».",
+        "Обними подушку и закрой глаза на минуту, представь, что кто-то тебя обнимает.",
+        "Напиши список из трёх вещей, за которые ты благодарен(на) сегодня.",
+        "Выйди на балкон или к окну, помаши рукой солнцу/звёздам.",
+        "Поставь чашку тёплого чая и согрей ладони.",
+        "Сделай три глубоких вдоха, представляя, как с каждым выдохом уходит одиночество."
+    ];
+    let currentLonelyPractice = lonelyPractices[0];
+    const lonelyPracticeSpan = document.getElementById('lonelyPractice');
+    document.getElementById('nextLonelyPracticeBtn').addEventListener('click', () => {
+        let newPractice;
+        do { newPractice = lonelyPractices[Math.floor(Math.random() * lonelyPractices.length)]; } while (newPractice === currentLonelyPractice);
+        currentLonelyPractice = newPractice;
+        lonelyPracticeSpan.innerText = currentLonelyPractice;
+    });
+
+    const lonelySupports = [
+        "Одиночество не равно покинутости. Ты важен(на) сам(а) по себе.",
+        "Твоя компания — самое ценное, что у тебя есть. Учись быть с собой в мире.",
+        "Это состояние временно. Ты снова почувствуешь тепло других.",
+        "Одиночество — время, когда можно узнать себя настоящего(ую).",
+        "Ты не один: многие люди сейчас чувствуют то же самое и читают эти строки.",
+        "Разреши себе грустить. Но не забывай: ты достоин(на) любви.",
+        "Облако напоминает: ты не изолирован(а). Все мы связаны.",
+        "Даже в тишине есть отклик. Просто прислушайся.",
+        "Ты сам(а) себе дом. Строй его с любовью.",
+        "Связь с миром не рвётся. Просто сейчас она тонкая, как нить. Но она есть."
+    ];
+    let currentLonelySupport = lonelySupports[0];
+    const lonelySupportSpan = document.getElementById('lonelySupport');
+    document.getElementById('nextLonelySupportBtn').addEventListener('click', () => {
+        let newSupport;
+        do { newSupport = lonelySupports[Math.floor(Math.random() * lonelySupports.length)]; } while (newSupport === currentLonelySupport);
+        currentLonelySupport = newSupport;
+        lonelySupportSpan.innerText = currentLonelySupport;
+    });
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem('vaibik_theme');
+        const toggleBtn = document.getElementById('themeToggle');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark');
+            toggleBtn.innerText = 'светлая тема';
+        } else {
+            document.body.classList.remove('dark');
+            toggleBtn.innerText = 'тёмная тема';
+        }
+    }
+    function toggleTheme() {
+        const toggleBtn = document.getElementById('themeToggle');
+        if (document.body.classList.contains('dark')) {
+            document.body.classList.remove('dark');
+            localStorage.setItem('vaibik_theme', 'light');
+            toggleBtn.innerText = 'тёмная тема';
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem('vaibik_theme', 'dark');
+            toggleBtn.innerText = 'светлая тема';
+        }
+    }
+    initTheme();
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+</script>
+</body>
+</html>

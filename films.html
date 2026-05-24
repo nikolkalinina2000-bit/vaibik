@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Вайбик — фильмы</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=3">
+    <link rel="shortcut icon" href="/favicon.png?v=3">
+    <link rel="apple-touch-icon" href="/favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        :root { --bg: #F2EFE9; --text: #4A3729; --text-muted: #7A5E4A; --card-bg: #FFFFFF; --card-border: #E2D4C8; --btn-bg: #FFFFFF; --btn-active: #DBC8B5; --btn-text: #4A3729; --accent: #A87B5A; --footer-bg: rgba(255, 250, 240, 0.7); --slider-bg: #DCCCB9; --slider-thumb: #B5875A; --muted: #7A5E4A; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.08); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.1); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.12); }
+        body.dark { --bg: #2A241E; --text: #F0E2D4; --text-muted: #C5B19B; --card-bg: #3D3228; --card-border: #5E4E3E; --btn-bg: #3D3228; --btn-active: #5E4B38; --btn-text: #E0D4C8; --accent: #C9A87C; --footer-bg: rgba(30, 25, 22, 0.8); --slider-bg: #5E4E3E; --slider-thumb: #C9A87C; --muted: #C5B19B; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.3); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.4); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.5); }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; padding: 1.5rem 1.5rem 0; min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; position: relative; }
+        body::before { content: ""; position: fixed; top: -15%; left: -15%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(180, 140, 100, 0.15), transparent 70%); border-radius: 50%; filter: blur(100px); z-index: 0; pointer-events: none; }
+        body::after { content: ""; position: fixed; bottom: -15%; right: -15%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(140, 100, 70, 0.12), transparent 70%); border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; }
+        body.dark::before { background: radial-gradient(circle, rgba(100, 80, 60, 0.25), transparent 70%); }
+        body.dark::after { background: radial-gradient(circle, rgba(80, 60, 40, 0.2), transparent 70%); }
+        .container { max-width: 1200px; margin: 0 auto; flex: 1; position: relative; z-index: 2; }
+        .theme-switch { position: fixed; top: 1.5rem; right: 1.5rem; background: var(--btn-bg); border: 1px solid var(--card-border); font-size: 0.8rem; font-weight: 500; color: var(--muted); cursor: pointer; z-index: 100; transition: 0.2s; font-family: 'Quicksand', sans-serif; padding: 6px 14px; border-radius: 30px; backdrop-filter: blur(4px); box-shadow: var(--shadow-sm); }
+        .theme-switch:hover { color: var(--text); background: var(--btn-active); transform: translateY(-2px); }
+        
+        .logo-link { text-decoration: none; display: block; }
+        .logo-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 0.15rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .cloud-letter { display: inline-block; font-size: 4rem; font-weight: 600; background: linear-gradient(135deg, #E6D0B5, #B5875A); background-clip: text; -webkit-background-clip: text; color: transparent; margin: 0; padding: 0; transition: all 0.2s ease; animation: float 3s infinite ease-in-out; text-shadow: 0 0 12px rgba(139, 90, 43, 0.2), 0 0 20px rgba(139, 90, 43, 0.1); filter: blur(0.3px); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        .cloud-letter:hover { transform: translateY(-8px); filter: blur(0px); text-shadow: 0 0 18px rgba(139, 90, 43, 0.3); }
+        
+        .tagline { text-align: center; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 4px; margin-bottom: 1.5rem; }
+        .nav-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .nav-link { background: transparent; border: none; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.2s; text-decoration: none; padding: 0.2rem 0; border-bottom: 1px dashed transparent; }
+        .nav-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        .filters-section { margin-bottom: 2rem; text-align: center; }
+        .filters-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 1rem; }
+        .filters-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+        .filter-btn { background: var(--btn-bg); border: 1px solid var(--card-border); padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 500; color: var(--btn-text); cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: var(--btn-active); color: var(--text); }
+        .filter-btn:hover { background: var(--btn-active); transform: translateY(-2px); }
+        
+        .mood-message {
+            background: var(--footer-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 1rem;
+            padding: 0.6rem 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--accent);
+            border: 1px solid var(--card-border);
+            display: none;
+        }
+        
+        /* СЕТКА: ТРИ КАРТОЧКИ В РЯД (как в книгах, но 3 колонки) */
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 900px) {
+            .movies-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .movies-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Карточка фильма — плавное появление и поднятие как в книгах */
+        .movie-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            border: 1px solid var(--card-border);
+            padding: 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: default;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            opacity: 0;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .save-btn { position: absolute; top: 0.8rem; right: 0.8rem; background: transparent; border: none; font-size: 2rem; cursor: pointer; transition: 0.2s; color: var(--text-muted); opacity: 0.85; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 5; line-height: 1; }
+        .save-btn span { display: inline-block; transform: scaleX(0.9) scaleY(0.85); }
+        .save-btn:hover { background: rgba(168, 123, 90, 0.6); opacity: 1; transform: scale(1.05); }
+        .save-btn.saved { color: #D36F52; opacity: 1; background: rgba(211, 111, 82, 0.5); }
+        body.dark .save-btn.saved { color: #EAA67C; background: rgba(234, 166, 124, 0.5); }
+        
+        .movie-poster { background: #DDCDBA; border-radius: 1rem; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.8rem; overflow: hidden; }
+        .movie-poster img { width: 100%; height: 100%; object-fit: cover; }
+        .movie-poster-placeholder { font-size: 0.9rem; font-weight: 500; color: #8F7A64; text-align: center; padding: 1rem; }
+        .movie-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem; color: var(--text); }
+        .movie-year { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+        .movie-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
+        .movie-tag { background: var(--btn-active); padding: 0.15rem 0.5rem; border-radius: 20px; font-size: 0.6rem; color: var(--btn-text); }
+        .movie-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; margin-bottom: 0.6rem; }
+        .movie-ratings { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 0.3rem; margin-bottom: 0.5rem; }
+        .rating-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.6rem; font-weight: 500; color: var(--text); }
+        .rating-label { width: 52px; font-size: 0.6rem; }
+        .rating-bar { flex: 1; height: 3px; background: var(--slider-bg); border-radius: 2px; overflow: hidden; }
+        .rating-fill { height: 100%; width: 0%; border-radius: 2px; }
+        .rating-fill.trogaet { background: #9B8A78; }
+        .rating-fill.sogrevaet { background: #D8B48F; }
+        .rating-value { width: 25px; text-align: right; font-size: 0.6rem; }
+        
+        /* Кнопки — без подъёма, только изменение фона */
+        .watch-links {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: auto;
+            padding-top: 0.5rem;
+        }
+        .watch-link {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 40px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--btn-text);
+            text-decoration: none;
+            transition: background 0.2s ease;
+            text-align: center;
+            flex: 1;
+            white-space: nowrap;
+        }
+        .watch-link:hover {
+            background: var(--btn-active);
+        }
+        
+        .site-footer { margin-top: 2rem; background: var(--footer-bg); backdrop-filter: blur(8px); border-radius: 2rem 2rem 0 0; padding: 1rem 1.5rem; border-top: 1px solid var(--card-border); text-align: center; }
+        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; max-width: 1000px; margin: 0 auto; }
+        .footer-about { font-size: 0.7rem; color: var(--text-muted); text-align: left; flex: 2; }
+        .footer-contacts { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+        .footer-contacts a { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; transition: 0.2s; }
+        .footer-contacts a:hover { color: var(--accent); }
+        .footer-copyright { text-align: center; font-size: 0.6rem; color: var(--text-muted); margin-top: 0.8rem; border-top: 0.5px solid var(--card-border); padding-top: 0.6rem; }
+        .help-btn-red { background-color: var(--accent); border: none; color: white; padding: 0.6rem 1.2rem; border-radius: 40px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; margin-bottom: 1rem; box-shadow: var(--shadow-sm); }
+        .help-btn-red:hover { background-color: #8C644A; transform: scale(1.01); box-shadow: var(--shadow-md); }
+        .credits { font-size: 0.6rem; color: var(--text-muted); }
+        
+        .floating-mixer { position: fixed; bottom: 2rem; right: 2rem; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s; z-index: 1000; }
+        .floating-mixer:hover { transform: scale(1.05); background: #8C644A; }
+        body.dark .floating-mixer { background: #C9A87C; }
+        body.dark .floating-mixer:hover { background: #B08B62; }
+        .mixer-modal { position: fixed; bottom: 6rem; right: 2rem; width: 280px; background: var(--card-bg); border-radius: 1.5rem; border: 1px solid var(--card-border); box-shadow: var(--shadow-md); padding: 1rem; z-index: 1001; display: none; backdrop-filter: blur(8px); }
+        .mixer-modal.active { display: block; }
+        .mixer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-weight: 600; color: var(--text); }
+        .mixer-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .mixer-sound-item { display: flex; align-items: center; margin-bottom: 0.8rem; gap: 0.5rem; }
+        .mixer-sound-name { width: 65px; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer; transition: 0.2s; }
+        .mixer-sound-name.active { color: var(--accent); }
+        .mixer-sound-name:hover { color: var(--accent); }
+        .mixer-slider { flex: 1; height: 4px; -webkit-appearance: none; background: var(--slider-bg); border-radius: 4px; }
+        .mixer-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--slider-thumb); border-radius: 50%; cursor: pointer; }
+        .mixer-value { font-size: 0.7rem; color: var(--text-muted); width: 35px; text-align: center; }
+        .mixer-btn { width: 100%; background: var(--btn-bg); border: none; border-radius: 40px; padding: 0.3rem; font-size: 0.7rem; font-weight: 500; color: var(--btn-text); cursor: pointer; margin-top: 0.5rem; }
+        .mixer-btn:hover { background: var(--btn-active); }
+        
+        @media (max-width: 650px) { 
+            .cloud-letter { font-size: 2.4rem; } 
+            .logo-wrapper { gap: 0.1rem; } 
+            .theme-switch { top: 1rem; right: 1rem; font-size: 0.7rem; padding: 4px 10px; } 
+            .floating-mixer { width: 48px; height: 48px; font-size: 1.5rem; bottom: 1.5rem; right: 1.5rem; } 
+            .mixer-modal { width: 260px; right: 0.5rem; bottom: 5rem; } 
+            .save-btn { width: 40px; height: 40px; font-size: 1.7rem; } 
+            .watch-link { font-size: 0.6rem; padding: 0.2rem 0.4rem; white-space: normal; }
+            .watch-links { gap: 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+<button class="theme-switch" id="themeToggle">тёмная тема</button>
+<button class="floating-mixer" id="floatingMixerBtn">🎧</button>
+<div class="mixer-modal" id="mixerModal">
+    <div class="mixer-header">
+        <span>настрой шум</span>
+        <button class="mixer-close" id="mixerCloseBtn">✕</button>
+    </div>
+    <div id="mixerSoundsList"></div>
+    <button class="mixer-btn" id="muteAllBtn">выключить звуки</button>
+</div>
+
+<div class="container">
+    <a href="index.html" class="logo-link">
+        <div class="logo-wrapper">
+            <span class="cloud-letter">в</span><span class="cloud-letter">а</span><span class="cloud-letter">й</span>
+            <span class="cloud-letter">б</span><span class="cloud-letter">и</span><span class="cloud-letter">к</span>
+        </div>
+    </a>
+    <div class="tagline">убежище. здесь тихо</div>
+
+    <div class="nav-links">
+        <a href="films.html" class="nav-link">фильмы</a>
+        <a href="books.html" class="nav-link">книги</a>
+        <a href="audiobooks.html" class="nav-link">аудиокниги</a>
+        <a href="music.html" class="nav-link">музыка</a>
+    </div>
+
+    <div class="filters-section">
+        <div class="filters-label">что тебе сейчас нужно?</div>
+        <div class="filters-grid" id="filtersGrid">
+            <button class="filter-btn active" data-filter="all">все</button>
+            <button class="filter-btn" data-filter="trevoga">успокоиться</button>
+            <button class="filter-btn" data-filter="grust">найти тепло</button>
+            <button class="filter-btn" data-filter="gnev">выпустить пар</button>
+            <button class="filter-btn" data-filter="pusto">найти смысл</button>
+            <button class="filter-btn" data-filter="odin">чувствовать связь</button>
+        </div>
+    </div>
+
+    <div id="moodMessage" class="mood-message"></div>
+
+    <div class="movies-grid" id="moviesGrid"></div>
+</div>
+
+<div class="site-footer">
+    <div class="footer-content">
+        <div class="footer-about"><strong>Вайбик</strong> — тихое пространство, где можно побыть с собой. Здесь не лечат, не оценивают, не советуют. Просто звуки, кино, книги и атмосфера.</div>
+        <div class="footer-contacts">
+            <a href="#" id="contactEmail">hello@vaibik.ru</a>
+            <a href="https://t.me/vaibik_project" target="_blank" id="contactTelegram">telegram</a>
+            <a href="https://www.instagram.com/vaibik.project" target="_blank" id="contactInstagram">instagram</a>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <button class="help-btn-red" id="helpBtn">если очень плохо — помощь</button>
+        <div class="credits">все чувства имеют значение</div>
+    </div>
+</div>
+
+<script>
+    const soundsList = [
+        { name: 'дождь', key: 'rain', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20(2).mp3' },
+        { name: 'костёр', key: 'fire', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BA%D0%BE%D1%81%D1%82%D0%B5%D1%80.mp3' },
+        { name: 'море', key: 'sea', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BC%D0%BE%D1%80%D0%B5.mp3' },
+        { name: 'ветер', key: 'wind', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BB%D0%B5%D1%81.mp3' },
+        { name: 'гроза', key: 'storm', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B3%D1%80%D0%BE%D0%B7%D0%B0.mp3' }
+    ];
+    let audioElements = {}, activeStates = {}, volumes = {};
+    soundsList.forEach(sound => {
+        activeStates[sound.key] = false;
+        volumes[sound.key] = 0.4;
+        audioElements[sound.key] = new Audio(sound.url);
+        audioElements[sound.key].loop = true;
+        audioElements[sound.key].volume = volumes[sound.key];
+        audioElements[sound.key].load();
+    });
+    function loadSoundSettings() {
+        try {
+            const savedVolumes = localStorage.getItem('vaibik_sound_volumes');
+            if (savedVolumes) Object.assign(volumes, JSON.parse(savedVolumes));
+            const savedActive = localStorage.getItem('vaibik_sound_active');
+            if (savedActive) Object.assign(activeStates, JSON.parse(savedActive));
+            for (let key in volumes) if (audioElements[key]) audioElements[key].volume = volumes[key];
+            for (let key in activeStates) if (activeStates[key] && audioElements[key]) audioElements[key].play().catch(e=>console.warn(e));
+        } catch(e) {}
+    }
+    function saveSoundSettings() {
+        localStorage.setItem('vaibik_sound_volumes', JSON.stringify(volumes));
+        localStorage.setItem('vaibik_sound_active', JSON.stringify(activeStates));
+    }
+    function updateMixerUI() {
+        const container = document.getElementById('mixerSoundsList');
+        if (!container) return;
+        container.innerHTML = '';
+        soundsList.forEach(sound => {
+            const div = document.createElement('div');
+            div.className = 'mixer-sound-item';
+            div.innerHTML = `
+                <span class="mixer-sound-name ${activeStates[sound.key] ? 'active' : ''}" data-key="${sound.key}">${sound.name}</span>
+                <input type="range" class="mixer-slider" data-key="${sound.key}" min="0" max="100" step="1" value="${Math.round(volumes[sound.key] * 100)}">
+                <span class="mixer-value">${Math.round(volumes[sound.key] * 100)}%</span>
+            `;
+            container.appendChild(div);
+        });
+        document.querySelectorAll('.mixer-sound-name').forEach(el => {
+            const key = el.dataset.key;
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (activeStates[key]) {
+                    audioElements[key].pause();
+                    activeStates[key] = false;
+                    el.classList.remove('active');
+                } else {
+                    audioElements[key].play().catch(e=>console.warn(e));
+                    activeStates[key] = true;
+                    el.classList.add('active');
+                }
+                saveSoundSettings();
+                updateMixerUI();
+            });
+        });
+        document.querySelectorAll('.mixer-slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const key = slider.dataset.key;
+                const val = parseInt(e.target.value) / 100;
+                volumes[key] = val;
+                if (audioElements[key]) audioElements[key].volume = val;
+                slider.nextElementSibling.innerText = e.target.value + '%';
+                saveSoundSettings();
+            });
+        });
+    }
+    function muteAllSounds() {
+        for (let key in audioElements) {
+            if (activeStates[key]) {
+                audioElements[key].pause();
+                activeStates[key] = false;
+            }
+        }
+        saveSoundSettings();
+        updateMixerUI();
+    }
+    const modal = document.getElementById('mixerModal');
+    document.getElementById('floatingMixerBtn').addEventListener('click', () => {
+        modal.classList.toggle('active');
+        updateMixerUI();
+    });
+    document.getElementById('mixerCloseBtn').addEventListener('click', () => modal.classList.remove('active'));
+    document.getElementById('muteAllBtn').addEventListener('click', muteAllSounds);
+    loadSoundSettings();
+
+    const movies = [
+        { id: 33, title: "Помни", year: 2000, desc: "Герой с антероградной амнезией расследует убийство жены, используя татуировки.", tags: ["триллер","драма"], states: [], trogaet: 8, sogrevaet: 2, posterUrl: "https://i.ibb.co/d4cRJD25/image.jpg", kinopoiskUrl: "https://www.kinopoisk.ru/film/335/?utm_referrer=yandex.ru&socialAlias=MTUxNTA4NjEy", rutubeUrl: "", vkUrl: "https://vk.com/video-214473293_456239070" },
+        { id: 29, title: "Дневник памяти", year: 2004, desc: "Любовь, преодолевающая болезнь и время.", tags: ["романтика"], states: ["grust","odin"], trogaet: 9, sogrevaet: 7, posterUrl: "https://i.ibb.co/DDbhznpN/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/6bd04c7545613458365e64ebdbcffcce/", vkUrl: "" },
+        { id: 12, title: "1+1", year: 2011, desc: "Реальная история дружбы парализованного аристократа и уличного парня.", tags: ["драма"], states: ["grust","pusto","odin"], trogaet: 6, sogrevaet: 9, posterUrl: "https://i.ibb.co/NgvJzK6t/1-1.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/4127663ed234fa8584aeb969ceb02cd8", rutubeUrl: "", vkUrl: "" },
+        { id: 31, title: "Пока не сыграл в ящик", year: 2007, desc: "Двое неизлечимо больных мужчин отправляются в путешествие, чтобы исполнить свои мечты.", tags: ["драма","комедия"], states: ["grust","pusto"], trogaet: 7, sogrevaet: 8, posterUrl: "https://i.ibb.co/whspw8Vx/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/ce552e32d54055daa40438fc6fcb36e8/", vkUrl: "https://vkvideo.ru/video-220018529_456243629" },
+        { id: 32, title: "Куда приводят мечты", year: 1998, desc: "Визуально потрясающая история о жизни после смерти, любви, которая сильнее смерти.", tags: ["драма","фэнтези"], states: ["grust","pusto"], trogaet: 9, sogrevaet: 6, posterUrl: "https://i.ibb.co/QFGQZCQH/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/715c3a2f9df68e6f246db51d9eb30fbf/", vkUrl: "https://vkvideo.ru/video-176294899_456254407" },
+        { id: 44, title: "Остров проклятых", year: 2010, desc: "Два маршала прибывают в психиатрическую клинику...", tags: ["триллер","детектив"], states: [], trogaet: 8, sogrevaet: 3, posterUrl: "https://i.ibb.co/Vc2ZCw2b/image.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/443c9a2dee446db0b8d3a6d7f930528eс", rutubeUrl: "", vkUrl: "" },
+        { id: 45, title: "Зелёная книга", year: 2018, desc: "Итальянский вышибала нанимается водителем к чернокожему пианисту...", tags: ["драма","комедия"], states: ["grust","pusto","odin"], trogaet: 6, sogrevaet: 9, posterUrl: "https://i.ibb.co/9HvPN7Ys/image.jpg", kinopoiskUrl: "", rutubeUrl: "", vkUrl: "https://vkvideo.ru/video-220018529_456243247" },
+        { id: 46, title: "Шоу Трумана", year: 1998, desc: "Труман живёт в идеальном городе, не подозревая, что вся его жизнь — телешоу...", tags: ["драма","фантастика"], states: ["pusto"], trogaet: 7, sogrevaet: 7, posterUrl: "https://i.ibb.co/MkZZvrK6/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/c95bff359bcb55b2c978d882cb32bdbe/", vkUrl: "https://vkvideo.ru/video-220018529_456243367" },
+        { id: 47, title: "Мгла", year: 2007, desc: "После страшной бури город окутывает туман, полный чудовищ...", tags: ["ужасы","триллер"], states: [], trogaet: 8, sogrevaet: 1, posterUrl: "https://i.ibb.co/9HDtx91D/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/cfaf674e80b20fd4ba66f199c917278a/", vkUrl: "https://vkvideo.ru/video-218359460_456241374" },
+        { id: 34, title: "Умница Уилл Хантинг", year: 1997, desc: "Гениальный уборщик из Бостона случайно решает сложную математическую задачу...", tags: ["драма"], states: ["gnev","pusto"], trogaet: 8, sogrevaet: 7, posterUrl: "https://i.ibb.co/CsJBpJ8m/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/8584f2ecaa87c6ba6c366710a86b29f5/", vkUrl: "https://vkvideo.ru/video-192061641_456239837" },
+        { id: 35, title: "Поток", year: 2024, desc: "Латышский анимационный фильм о мире после исчезновения людей...", tags: ["анимация","драма"], states: ["pusto"], trogaet: 7, sogrevaet: 6, posterUrl: "https://i.ibb.co/23f7Zqtz/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/7846107c8940a4034aad9c5d480faf9c/", vkUrl: "https://vkvideo.ru/video-226802088_456249298" },
+        { id: 36, title: "Бойфренд из будущего", year: 2021, desc: "Парень, который не может остановиться и живёт каждый день как последний...", tags: ["комедия","фантастика"], states: ["gnev","pusto"], trogaet: 5, sogrevaet: 7, posterUrl: "https://i.ibb.co/q3fnnhsh/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/0bde5fd359861fd65650954d5172f6ff/", vkUrl: "https://vkvideo.ru/video-220018529_456240464" },
+        { id: 37, title: "Бьютифул", year: 2010, desc: "Тяжёлая драма с Хавьером Бардемом о мужчине, который пытается наладить жизнь своих детей...", tags: ["драма"], states: [], trogaet: 9, sogrevaet: 2, posterUrl: "https://i.ibb.co/fzZSnLrm/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/314ca27ebe573a3a35d6dd2818fe8999/", vkUrl: "https://vk.com/video1113527_456261757" },
+        { id: 38, title: "Проект Флорида", year: 2017, desc: "История маленькой девочки и её матери, живущих в мотеле недалеко от Диснейленда.", tags: ["драма"], states: [], trogaet: 8, sogrevaet: 5, posterUrl: "https://i.ibb.co/2QDrrzC/image.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/4bed957914182886a487b678dcd71621?playingContentId=4bed957914182886a487b678dcd71621&watch=", rutubeUrl: "", vkUrl: "https://vk.com/video-220018529_456241048" },
+        { id: 39, title: "Общество мёртвых поэтов", year: 1989, desc: "Учитель литературы вдохновляет учеников закрытой школы-интерната жить своей жизнью...", tags: ["драма"], states: ["grust","pusto","odin"], trogaet: 9, sogrevaet: 6, posterUrl: "https://i.ibb.co/3m2RDR09/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/f78108bdb07359483a12ee46d7b750ab/", vkUrl: "https://vkvideo.ru/video-220018529_456243946" },
+        { id: 40, title: "Карп отмороженный", year: 2017, desc: "Российская комедия о неудачнике, который решает изменить свою жизнь с помощью квеста.", tags: ["комедия"], states: ["gnev","pusto"], trogaet: 4, sogrevaet: 6, posterUrl: "https://i.ibb.co/Lzgw02BJ/image.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/4dce85a435023b2cb4798889390412df", rutubeUrl: "", vkUrl: "" },
+        { id: 41, title: "Жить", year: 2012, desc: "Российская драма о людях, переживших страшную трагедию...", tags: ["драма"], states: [], trogaet: 9, sogrevaet: 2, posterUrl: "https://i.ibb.co/0VtL08Ky/image.jpg", kinopoiskUrl: "", rutubeUrl: "", vkUrl: "https://vkvideo.ru/video-175669987_456240328" },
+        { id: 42, title: "Полночь в Париже", year: 2011, desc: "Писатель в отпуске с невестой случайно попадает в Париж 1920-х годов...", tags: ["фэнтези","романтика"], states: ["grust","pusto"], trogaet: 6, sogrevaet: 8, posterUrl: "https://i.ibb.co/hFpqBS3S/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/654ef9ef7ad4d0cbc438f56ba6accbf7/", vkUrl: "https://vkvideo.ru/video-233305176_456241371?t=20m15s" },
+        { id: 43, title: "Двухсотлетний человек", year: 1999, desc: "Робот постепенно обретает человеческие чувства и мечтает стать человеком.", tags: ["фантастика","драма"], states: ["grust","odin","pusto"], trogaet: 8, sogrevaet: 7, posterUrl: "https://i.ibb.co/zWzZS1R0/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/64eac943efe51cf756bcbc3f7432eb30/", vkUrl: "https://vkvideo.ru/video-168223031_456239523?t=56m34s" },
+        { id: 1, title: "Манчестер у моря", year: 2016, desc: "Тяжёлая история о потере и вине.", tags: ["драма"], states: [], trogaet: 9, sogrevaet: 2, posterUrl: "https://i.ibb.co/CpsXSTTr/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/a1699919189bf989b7efa820d44a492c/", vkUrl: "https://vkvideo.ru/video-220018529_456241180" },
+        { id: 2, title: "В поисках Дори", year: 2016, desc: "Мультфильм о том, как плыть дальше.", tags: ["анимация"], states: ["trevoga","odin"], trogaet: 3, sogrevaet: 8, posterUrl: "https://i.ibb.co/cSbx9cCM/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/8efffe7ab79315cc1eb607523fa9f6ac/", vkUrl: "https://vkvideo.ru/video-151233696_456239230?t=5s" },
+        { id: 3, title: "Шопоголик", year: 2009, desc: "Лёгкая комедия о долгах и шопинге.", tags: ["комедия"], states: ["trevoga","gnev","pusto"], trogaet: 2, sogrevaet: 6, posterUrl: "https://i.ibb.co/cSDJXYWH/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/5b57573bbc7e85a0899f584766b62c93/", vkUrl: "https://vkvideo.ru/video-20063552_456240528" },
+        { id: 4, title: "Король Лев", year: 1994, desc: "Классика о принятии утраты.", tags: ["анимация"], states: ["grust","gnev"], trogaet: 7, sogrevaet: 9, posterUrl: "https://i.ibb.co/BVX2LW9J/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/2f3e16b0e93a9d1eb8bbe7221832706e/", vkUrl: "https://vkvideo.ru/video-226802088_456261232?t=0s" },
+        { id: 5, title: "Патерсон", year: 2016, desc: "Медитативный фильм о поэте-водителе автобуса.", tags: ["драма"], states: ["trevoga","pusto","odin"], trogaet: 4, sogrevaet: 7, posterUrl: "https://i.ibb.co/bjP83NwT/image.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/4a220d93ee7540f580388415e74e2f62", rutubeUrl: "", vkUrl: "" },
+        { id: 7, title: "Земля кочевников", year: 2020, desc: "Свобода и потеря дома.", tags: ["драма"], states: ["pusto","odin"], trogaet: 7, sogrevaet: 5, posterUrl: "https://i.ibb.co/YB2ktJjp/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/cdfd04ba92fa094d31e6959d9f78854d/", vkUrl: "https://vkvideo.ru/video-234512527_456245322?t=0s" },
+        { id: 8, title: "Достучаться до небес", year: 1997, desc: "Жизнь перед лицом смерти.", tags: ["драма"], states: ["grust","pusto"], trogaet: 8, sogrevaet: 7, posterUrl: "https://i.ibb.co/C3Lqpxcf/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/53b1cf3ad58825bbac153ceadc48cae1/", vkUrl: "https://vkvideo.ru/video-234512521_456246874?t=0s" },
+        { id: 9, title: "Отрочество", year: 2014, desc: "12 лет съёмок одной семьи.", tags: ["драма"], states: ["pusto"], trogaet: 6, sogrevaet: 6, posterUrl: "https://i.ibb.co/bj4xCZhn/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/febdb79ba2cf29afb3eaac84772e9a16/", vkUrl: "https://vkvideo.ru/video-220018529_456247418?t=1s" },
+        { id: 10, title: "Третий лишний", year: 2012, desc: "Глупая комедия с плюшевым медведем.", tags: ["комедия"], states: ["gnev","pusto"], trogaet: 2, sogrevaet: 5, posterUrl: "https://i.ibb.co/tw1z02yH/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/46466621be4dbd99bf344d1cf859335e/", vkUrl: "https://vkvideo.ru/video-220018529_456243524" },
+        { id: 11, title: "Вечное сияние чистого разума", year: 2004, desc: "Фантастическая драма о любви и памяти.", tags: ["драма"], states: ["grust","odin"], trogaet: 9, sogrevaet: 6, posterUrl: "https://i.ibb.co/xtBvzh3r/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/6fc6515753d2b4dc5016560b7429d2f6/", vkUrl: "https://vkvideo.ru/video-220018529_456239358" },
+        { id: 13, title: "Побег из Шоушенка", year: 1994, desc: "Несломленный дух и надежда.", tags: ["драма"], states: ["pusto","odin"], trogaet: 7, sogrevaet: 9, posterUrl: "https://i.ibb.co/k2yzqK3x/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/1a13ed24b9f105b43c8b9d19f1b6846a/", vkUrl: "https://vkvideo.ru/video-220018529_456243258" },
+        { id: 14, title: "Форрест Гамп", year: 1994, desc: "Жизнь как коробка конфет.", tags: ["драма"], states: ["grust","pusto","odin"], trogaet: 8, sogrevaet: 8, posterUrl: "https://i.ibb.co/8Lf3nbYZ/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/48a7dd6b620b30713b614f38c00a4739/", vkUrl: "https://vkvideo.ru/video-220018529_456243272" },
+        { id: 15, title: "Леон", year: 1994, desc: "Киллер и девочка-подросток – странная семья.", tags: ["триллер"], states: ["odin"], trogaet: 8, sogrevaet: 5, posterUrl: "https://i.ibb.co/q3R2HHxN/image.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/72f1f473e29a4442aade016a3b8036d5", rutubeUrl: "https://rutube.ru/video/99551ca91be3b24ef0f09b8851a9ce2e/", vkUrl: "https://vkvideo.ru/video-220018529_456243296" },
+        { id: 16, title: "Бойцовский клуб", year: 1999, desc: "Гнев, анархия, поиск себя.", tags: ["триллер"], states: ["gnev","pusto"], trogaet: 7, sogrevaet: 3, posterUrl: "https://i.ibb.co/Y4x7PrgZ/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/df90c64749f7e553ff97b20a54e0f3b5/", vkUrl: "https://vkvideo.ru/video-230610229_456239206?t=1s" },
+        { id: 17, title: "Королевство полной луны", year: 2012, desc: "Детская любовь на фоне идиллического пейзажа.", tags: ["драма"], states: ["odin","pusto"], trogaet: 4, sogrevaet: 7, posterUrl: "https://i.ibb.co/MxQpW81D/image.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/49b31fba4be7996aba66d864e4140b3f", rutubeUrl: "", vkUrl: "https://vkvideo.ru/video-34229261_456248011?t=0s" },
+        { id: 18, title: "Ла-Ла Ленд", year: 2016, desc: "Мечты, джаз и расставание.", tags: ["мюзикл"], states: ["grust","pusto"], trogaet: 8, sogrevaet: 7, posterUrl: "https://i.ibb.co/yFGhwP4m/image.jpg", kinopoiskUrl: "https://hd.kinopoisk.ru/film/4df03a8ddb64d11d99a2611bf39ac776", rutubeUrl: "", vkUrl: "https://vkvideo.ru/video-217672812_456239413?t=1s" },
+        { id: 19, title: "Тайная жизнь Уолтера Митти", year: 2013, desc: "Побег из серой реальности в приключения.", tags: ["драма"], states: ["pusto"], trogaet: 5, sogrevaet: 8, posterUrl: "https://i.ibb.co/chNXQwgB/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/be42f9a04fd950780e7d4e369fa02abb/", vkUrl: "https://vkvideo.ru/video-34229261_456248815?t=0s" },
+        { id: 21, title: "С широко закрытыми глазами", year: 1999, desc: "Ревность, тайные общества и ночной кошмар.", tags: ["драма"], states: [], trogaet: 7, sogrevaet: 3, posterUrl: "https://i.ibb.co/YBChcL2k/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/3215e15363d0be44a703148786accdca/", vkUrl: "https://vkvideo.ru/video-124259386_456246607?t=27s" },
+        { id: 22, title: "Мёд", year: 2010, desc: "Тихая турецкая драма о мальчике и природе.", tags: ["драма"], states: ["pusto"], trogaet: 6, sogrevaet: 4, posterUrl: "https://i.ibb.co/VWcLCnK3/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/dfb0a709e4f74576f77f7fb5cf1ffbc1/", vkUrl: "" },
+        { id: 23, title: "Твоё имя", year: 2016, desc: "Аниме о связи двух сердец.", tags: ["анимация"], states: ["grust","odin"], trogaet: 7, sogrevaet: 8, posterUrl: "https://i.ibb.co/F4fFr7Xs/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/779300d33a00c2cdce1c7a7d07c4206b/", vkUrl: "" },
+        { id: 24, title: "Она", year: 2013, desc: "Одиночество и любовь к операционной системе.", tags: ["драма"], states: ["odin","pusto"], trogaet: 8, sogrevaet: 5, posterUrl: "https://i.ibb.co/7dxQC71W/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/4431bc9bb80bc80bccdfccb7e5d99cb9/", vkUrl: "https://vk.com/video-69606939_456239136" },
+        { id: 25, title: "Реальная любовь", year: 2003, desc: "Рождественские истории о любви.", tags: ["романтика"], states: ["grust","odin"], trogaet: 5, sogrevaet: 8, posterUrl: "https://i.ibb.co/84cs6rrJ/image.jpg", kinopoiskUrl: "", rutubeUrl: "", vkUrl: "https://vkvideo.ru/video-176397446_456245259?t=1s" },
+        { id: 27, title: "Пианист", year: 2002, desc: "Выживание в варшавском гетто.", tags: ["драма"], states: [], trogaet: 9, sogrevaet: 3, posterUrl: "https://i.ibb.co/ynXf8j9Q/image.jpg", kinopoiskUrl: "", rutubeUrl: "", vkUrl: "https://vkvideo.ru/video-220018529_456240007" },
+        { id: 28, title: "Вокруг света за 80 дней", year: 2004, desc: "Приключенческая комедия с лёгким юмором.", tags: ["комедия"], states: ["gnev","pusto"], trogaet: 2, sogrevaet: 6, posterUrl: "https://i.ibb.co/YSQyF5w/80.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/5fabec636358f95fd58882ec4d171433/", vkUrl: "https://vkvideo.ru/video-220018529_456244014?t=1s" },
+        { id: 30, title: "В диких условиях", year: 2007, desc: "Поиск себя в отказе от цивилизации.", tags: ["драма"], states: ["pusto","odin"], trogaet: 7, sogrevaet: 5, posterUrl: "https://i.ibb.co/Zp8PQDkt/image.jpg", kinopoiskUrl: "", rutubeUrl: "https://rutube.ru/video/1167893ed6aa4a2ae7410298078e997a/", vkUrl: "https://rutube.ru/video/1167893ed6aa4a2ae7410298078e997a/" },
+        { id: 48, title: "Учитель на замену", year: 2011, desc: "Временный учитель приходит в проблемную школу, где сталкивается с жестокостью, равнодушием, суицидом ученицы и собственным внутренним адом.", tags: ["драма"], states: [], trogaet: 10, sogrevaet: 1, posterUrl: "https://i.ibb.co/xSYWDb2P/image.webp", kinopoiskUrl: "https://hd.kinopoisk.ru/film/480cb747cab703f88bb335c407789ece", rutubeUrl: "", vkUrl: "https://vkvideo.ru/video-231729433_456239450?t=26m58s" }
+    ];
+
+    let savedMovies = JSON.parse(localStorage.getItem('vaibik_saved_movies') || '[]');
+    function saveMovie(id) { if (!savedMovies.includes(id)) { savedMovies.push(id); localStorage.setItem('vaibik_saved_movies', JSON.stringify(savedMovies)); } }
+    function unsaveMovie(id) { savedMovies = savedMovies.filter(mid => mid !== id); localStorage.setItem('vaibik_saved_movies', JSON.stringify(savedMovies)); }
+    function isSaved(id) { return savedMovies.includes(id); }
+
+    function renderMovies(filterState = "all") {
+        const container = document.getElementById("moviesGrid");
+        container.innerHTML = "";
+        const filtered = movies.filter(m => filterState === "all" || m.states.includes(filterState));
+        filtered.forEach((m, idx) => {
+            const card = document.createElement("div");
+            card.className = "movie-card";
+            card.style.animationDelay = `${idx * 0.05}s`;
+            const saved = isSaved(m.id);
+            const posterHtml = m.posterUrl ? `<img src="${m.posterUrl}" alt="${m.title}" loading="lazy">` : `<div class="movie-poster-placeholder">${m.title}<br>🎬</div>`;
+            const tagsHtml = m.tags.map(tag => `<span class="movie-tag">${tag}</span>`).join('');
+            
+            let watchButtons = '';
+            if (m.kinopoiskUrl) watchButtons += `<a href="${m.kinopoiskUrl}" target="_blank" class="watch-link">Кинопоиск</a>`;
+            if (m.rutubeUrl) watchButtons += `<a href="${m.rutubeUrl}" target="_blank" class="watch-link">RuTube</a>`;
+            if (m.vkUrl) watchButtons += `<a href="${m.vkUrl}" target="_blank" class="watch-link">VK Видео</a>`;
+            
+            card.innerHTML = `
+                <button class="save-btn ${saved ? 'saved' : ''}" data-id="${m.id}"><span>♥</span></button>
+                <div class="movie-poster">${posterHtml}</div>
+                <div class="movie-title">${m.title}</div>
+                <div class="movie-year">${m.year}</div>
+                <div class="movie-tags">${tagsHtml}</div>
+                <div class="movie-desc">${m.desc}</div>
+                <div class="movie-ratings">
+                    <div class="rating-item"><span class="rating-label">Трогает</span><div class="rating-bar"><div class="rating-fill trogaet" style="width: ${m.trogaet * 10}%;"></div></div><span class="rating-value">${m.trogaet}/10</span></div>
+                    <div class="rating-item"><span class="rating-label">Согревает</span><div class="rating-bar"><div class="rating-fill sogrevaet" style="width: ${m.sogrevaet * 10}%;"></div></div><span class="rating-value">${m.sogrevaet}/10</span></div>
+                </div>
+                <div class="watch-links">
+                    ${watchButtons}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        document.querySelectorAll('.save-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                if (btn.classList.contains('saved')) {
+                    unsaveMovie(id);
+                    btn.classList.remove('saved');
+                } else {
+                    saveMovie(id);
+                    btn.classList.add('saved');
+                }
+            });
+        });
+    }
+
+    function initFilters() { 
+        const btns = document.querySelectorAll(".filter-btn"); 
+        btns.forEach(btn => { 
+            btn.addEventListener("click", () => { 
+                btns.forEach(b => b.classList.remove("active")); 
+                btn.classList.add("active"); 
+                renderMovies(btn.getAttribute("data-filter")); 
+            }); 
+        }); 
+    }
+
+    function applyMoodFilter() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mood = urlParams.get('mood');
+        let filterValue = null;
+        let messageText = '';
+
+        switch (mood) {
+            case 'empty':        filterValue = 'grust'; messageText = '🔆 Подборка для чувства опустошённости: фильмы, которые помогают найти тепло.'; break;
+            case 'anxious':      filterValue = 'trevoga'; messageText = '🌿 Подборка для тревоги: фильмы, которые помогают успокоиться.'; break;
+            case 'angry':        filterValue = 'gnev'; messageText = '💥 Подборка для гнева: фильмы, которые помогают выпустить пар.'; break;
+            case 'confused':     filterValue = 'pusto'; messageText = '🌀 Подборка, когда не знаешь, что чувствуешь: фильмы, которые помогают найти смысл.'; break;
+            case 'lonely':       filterValue = 'odin'; messageText = '🤍 Подборка для одиночества: фильмы, которые помогают почувствовать связь.'; break;
+            default:
+                renderMovies('all');
+                const msgDiv = document.getElementById('moodMessage');
+                if (msgDiv) msgDiv.style.display = 'none';
+                return;
+        }
+
+        if (filterValue) {
+            const targetBtn = document.querySelector(`.filter-btn[data-filter="${filterValue}"]`);
+            if (targetBtn) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                targetBtn.classList.add('active');
+                renderMovies(filterValue);
+            } else {
+                renderMovies(filterValue);
+            }
+            const moodMsgDiv = document.getElementById('moodMessage');
+            if (moodMsgDiv) {
+                moodMsgDiv.style.display = 'block';
+                moodMsgDiv.innerHTML = messageText;
+            }
+        }
+    }
+
+    function initTheme() { 
+        const savedTheme = localStorage.getItem('vaibik_theme'); 
+        const toggleBtn = document.getElementById('themeToggle'); 
+        if (savedTheme === 'dark') { 
+            document.body.classList.add('dark'); 
+            toggleBtn.innerText = 'светлая тема'; 
+        } else { 
+            document.body.classList.remove('dark'); 
+            toggleBtn.innerText = 'тёмная тема'; 
+        } 
+    }
+    function toggleTheme() { 
+        const toggleBtn = document.getElementById('themeToggle'); 
+        if (document.body.classList.contains('dark')) { 
+            document.body.classList.remove('dark'); 
+            localStorage.setItem('vaibik_theme', 'light'); 
+            toggleBtn.innerText = 'тёмная тема'; 
+        } else { 
+            document.body.classList.add('dark'); 
+            localStorage.setItem('vaibik_theme', 'dark'); 
+            toggleBtn.innerText = 'светлая тема'; 
+        } 
+    }
+    document.getElementById('helpBtn').onclick = () => window.location.href = 'help.html';
+    document.getElementById('contactEmail').onclick = () => alert('Скопируйте адрес: hello@vaibik.ru');
+    document.getElementById('contactTelegram').onclick = () => window.open('https://t.me/vaibik_project', '_blank');
+    document.getElementById('contactInstagram').onclick = () => window.open('https://www.instagram.com/vaibik.project', '_blank');
+    
+    initFilters();
+    applyMoodFilter();
+    initTheme();
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+</script>
+</body>
+</html>

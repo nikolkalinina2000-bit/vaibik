@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Вайбик — помощь</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=3">
+    <link rel="shortcut icon" href="/favicon.png?v=3">
+    <link rel="apple-touch-icon" href="/favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        :root { --bg: #F2EFE9; --text: #4A3729; --text-muted: #7A5E4A; --card-bg: #FFFFFF; --card-border: #E2D4C8; --btn-bg: #FFFFFF; --btn-active: #DBC8B5; --btn-text: #4A3729; --accent: #A87B5A; --footer-bg: rgba(255, 250, 240, 0.7); --slider-bg: #DCCCB9; --muted: #7A5E4A; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.08); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.1); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.12); }
+        body.dark { --bg: #2A241E; --text: #F0E2D4; --text-muted: #C5B19B; --card-bg: #3D3228; --card-border: #5E4E3E; --btn-bg: #3D3228; --btn-active: #5E4B38; --btn-text: #E0D4C8; --accent: #C9A87C; --footer-bg: rgba(30, 25, 22, 0.8); --slider-bg: #5E4E3E; --muted: #C5B19B; --shadow-sm: 0 6px 12px -8px rgba(0,0,0,0.3); --shadow-md: 0 12px 24px -12px rgba(0,0,0,0.4); --shadow-lg: 0 20px 30px -15px rgba(0,0,0,0.5); }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; padding: 1.5rem 1.5rem 0; min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; position: relative; }
+        body::before { content: ""; position: fixed; top: -15%; left: -15%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(180, 140, 100, 0.15), transparent 70%); border-radius: 50%; filter: blur(100px); z-index: 0; pointer-events: none; }
+        body::after { content: ""; position: fixed; bottom: -15%; right: -15%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(140, 100, 70, 0.12), transparent 70%); border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; }
+        body.dark::before { background: radial-gradient(circle, rgba(100, 80, 60, 0.25), transparent 70%); }
+        body.dark::after { background: radial-gradient(circle, rgba(80, 60, 40, 0.2), transparent 70%); }
+        .container { max-width: 900px; margin: 0 auto; flex: 1; position: relative; z-index: 2; text-align: center; padding-bottom: 2rem; }
+        .theme-switch { position: fixed; top: 1.5rem; right: 1.5rem; background: var(--btn-bg); border: 1px solid var(--card-border); font-size: 0.8rem; font-weight: 500; color: var(--muted); cursor: pointer; z-index: 100; transition: 0.2s; font-family: 'Quicksand', sans-serif; padding: 6px 14px; border-radius: 30px; backdrop-filter: blur(4px); box-shadow: var(--shadow-sm); }
+        .theme-switch:hover { color: var(--text); background: var(--btn-active); transform: translateY(-2px); }
+        
+        .logo-link { text-decoration: none; display: block; margin-bottom: 0.8rem; }
+        .logo-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 0.15rem; flex-wrap: wrap; }
+        .cloud-letter { display: inline-block; font-size: 4rem; font-weight: 600; background: linear-gradient(135deg, #E6D0B5, #B5875A); background-clip: text; -webkit-background-clip: text; color: transparent; margin: 0; padding: 0; transition: all 0.2s ease; animation: float 3s infinite ease-in-out; text-shadow: 0 0 12px rgba(139, 90, 43, 0.2), 0 0 20px rgba(139, 90, 43, 0.1); filter: blur(0.3px); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        .cloud-letter:hover { transform: translateY(-8px); filter: blur(0px); text-shadow: 0 0 18px rgba(139, 90, 43, 0.3); }
+        @media (max-width: 650px) { .cloud-letter { font-size: 2.4rem; } .logo-wrapper { gap: 0.1rem; } }
+        
+        .tagline { text-align: center; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 4px; margin-bottom: 1.5rem; }
+        h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); letter-spacing: -0.5px; }
+        .sub { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem; }
+        
+        .help-block { background: var(--footer-bg); backdrop-filter: blur(8px); border-radius: 2rem; padding: 1.5rem; margin: 1.5rem auto; border: 1px solid var(--card-border); text-align: left; max-width: 700px; }
+        .help-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; border-left: 3px solid var(--accent); padding-left: 0.8rem; }
+        .help-list { list-style: none; margin-bottom: 0.5rem; }
+        .help-list li { margin-bottom: 0.8rem; padding-left: 1.5rem; position: relative; }
+        .help-list li::before { content: "•"; color: var(--accent); font-weight: bold; position: absolute; left: 0.3rem; }
+        .help-list a { color: var(--text); text-decoration: none; border-bottom: 1px dotted var(--accent); transition: 0.2s; }
+        .help-list a:hover { color: var(--accent); border-bottom-color: var(--text-muted); }
+        .small-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center; }
+        
+        .back-link { display: inline-block; margin-top: 2rem; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; border-bottom: 1px dashed var(--card-border); }
+        .back-link:hover { color: var(--accent); }
+        
+        .floating-mixer-btn { position: fixed; bottom: 2rem; right: 2rem; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s; z-index: 200; }
+        .floating-mixer-btn:hover { transform: scale(1.05); background: #8C644A; }
+        body.dark .floating-mixer-btn { background: #C9A87C; }
+        .mixer-modal { position: fixed; bottom: 6rem; right: 2rem; width: 280px; background: var(--card-bg); border-radius: 1.5rem; border: 1px solid var(--card-border); box-shadow: var(--shadow-md); padding: 1rem; z-index: 201; display: none; backdrop-filter: blur(8px); }
+        .mixer-modal.active { display: block; }
+        .mixer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-weight: 600; color: var(--text); }
+        .mixer-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .mixer-sound-item { display: flex; align-items: center; margin-bottom: 0.8rem; gap: 0.5rem; }
+        .mixer-sound-name { width: 65px; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer; transition: 0.2s; }
+        .mixer-sound-name.active { color: var(--accent); }
+        .mixer-slider { flex: 1; height: 4px; -webkit-appearance: none; background: var(--slider-bg); border-radius: 4px; }
+        .mixer-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #B5875A; border-radius: 50%; cursor: pointer; border: none; }
+        .mixer-slider::-moz-range-thumb { width: 12px; height: 12px; background: #B5875A; border-radius: 50%; cursor: pointer; border: none; }
+        body.dark .mixer-slider::-webkit-slider-thumb { background: #C9A87C; }
+        .mixer-value { font-size: 0.7rem; color: var(--text-muted); width: 35px; text-align: center; }
+        .mixer-btn { width: 100%; background: var(--btn-bg); border: none; border-radius: 40px; padding: 0.3rem; font-size: 0.7rem; font-weight: 500; color: var(--btn-text); cursor: pointer; margin-top: 0.5rem; }
+        .mixer-btn:hover { background: var(--btn-active); }
+        
+        @media (max-width: 650px) {
+            .cloud-letter { font-size: 2.4rem; }
+            .theme-switch { top: 1rem; right: 1rem; font-size: 0.7rem; padding: 4px 10px; }
+            .floating-mixer-btn { width: 48px; height: 48px; font-size: 1.5rem; bottom: 1.5rem; right: 1.5rem; }
+            .mixer-modal { width: 260px; right: 0.5rem; bottom: 5rem; }
+            h1 { font-size: 1.5rem; }
+            .help-block { padding: 1rem; }
+            .help-title { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<button class="theme-switch" id="themeToggle">тёмная тема</button>
+<button class="floating-mixer-btn" id="floatingMixerBtn">🎧</button>
+<div class="mixer-modal" id="mixerModal">
+    <div class="mixer-header"><span>настрой шум</span><button class="mixer-close" id="mixerCloseBtn">✕</button></div>
+    <div id="mixerSoundsList"></div>
+    <button class="mixer-btn" id="muteAllBtn">выключить звуки</button>
+</div>
+
+<div class="container">
+    <a href="index.html" class="logo-link">
+        <div class="logo-wrapper">
+            <span class="cloud-letter">в</span><span class="cloud-letter">а</span><span class="cloud-letter">й</span>
+            <span class="cloud-letter">б</span><span class="cloud-letter">и</span><span class="cloud-letter">к</span>
+        </div>
+    </a>
+    <div class="tagline">убежище. здесь тихо</div>
+
+    <h1>если очень плохо</h1>
+    <div class="sub">помощь рядом</div>
+
+    <div class="help-block">
+        <div class="help-title"> круглосуточные телефоны доверия</div>
+        <ul class="help-list">
+            <li><strong>8-800-2000-122</strong> — единый общероссийский телефон доверия (для взрослых и детей, анонимно, бесплатно)</li>
+            <li><strong>8-800-200-01-22</strong> — детский телефон доверия (для детей, подростков и родителей)</li>
+            <li><strong>112</strong> — единая служба экстренной помощи (в любой критической ситуации)</li>
+        </ul>
+        <div class="small-note">Звонок бесплатный с любого телефона. Вам помогут.</div>
+    </div>
+
+    <div class="help-block">
+        <div class="help-title"> онлайн-помощь</div>
+        <ul class="help-list">
+            <li><a href="https://psi-help.net/online-chat" target="_blank">Психологическая помощь онлайн (psi-help.net)</a> — бесплатный анонимный чат</li>
+            <li><a href="https://www.b17.ru/online/" target="_blank">B17.ru — онлайн-консультации</a> (можно выбрать бесплатных специалистов)</li>
+            <li><a href="https://www.mospsycholog.ru/online-chat" target="_blank">Московская служба психологической помощи</a> — чат и форум</li>
+            <li><a href="https://www.chtodelat.ru/kuda-pozvonit/" target="_blank">«Что делать?» — подборка кризисных центров по городам</a></li>
+        </ul>
+        <div class="small-note">Некоторые сервисы работают 24/7, другие — в дневное время. Если не отвечают — звоните по телефону.</div>
+    </div>
+
+    <div class="help-block">
+        <div class="help-title"> что можно попробовать прямо сейчас</div>
+        <ul class="help-list">
+            <li><strong>Дыхание «квадрат»:</strong> вдох (4 с) — задержка (4 с) — выдох (4 с) — задержка (4 с). Повторить 5–10 раз.</li>
+            <li><strong>Заземление 5-4-3-2-1:</strong> назовите 5 вещей, которые видите; 4 – которые можете потрогать; 3 – слышите; 2 – чувствуете запах; 1 – можете попробовать на вкус.</li>
+            <li><strong>Обнимите себя:</strong> скрестите руки на груди и мягко похлопайте по плечам, как будто успокаиваете близкого человека.</li>
+            <li><strong>Вода:</strong> умойтесь холодной водой или выпейте стакан воды – это снижает уровень тревоги.</li>
+            <li><strong>Отвлечение:</strong> назовите все красные предметы вокруг или переберите буквы алфавита с примерами слов.</li>
+        </ul>
+        <div class="small-note">Эти упражнения не заменяют профессиональную помощь, но помогают переждать острую волну.</div>
+    </div>
+
+    <a href="index.html" class="back-link">← вернуться на главную</a>
+</div>
+
+<script>
+    const soundsList = [
+        { name: 'дождь', key: 'rain', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20(2).mp3' },
+        { name: 'костёр', key: 'fire', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BA%D0%BE%D1%81%D1%82%D0%B5%D1%80.mp3' },
+        { name: 'море', key: 'sea', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BC%D0%BE%D1%80%D0%B5.mp3' },
+        { name: 'лес', key: 'forest', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%BB%D0%B5%D1%81.mp3' },
+        { name: 'гроза', key: 'storm', url: 'https://github.com/nikolkalinina2000-bit/qwwqqww/raw/refs/heads/main/%D0%B3%D1%80%D0%BE%D0%B7%D0%B0.mp3' }
+    ];
+    let audioElements = {}, activeStates = {}, volumes = {};
+    soundsList.forEach(s => { activeStates[s.key]=false; volumes[s.key]=0.4; audioElements[s.key]=new Audio(s.url); audioElements[s.key].loop=true; audioElements[s.key].volume=volumes[s.key]; audioElements[s.key].load(); });
+    function load() { try{ let v=localStorage.getItem('vaibik_sound_volumes'); if(v) Object.assign(volumes,JSON.parse(v)); let a=localStorage.getItem('vaibik_sound_active'); if(a) Object.assign(activeStates,JSON.parse(a)); for(let k in volumes) if(audioElements[k]) audioElements[k].volume=volumes[k]; for(let k in activeStates) if(activeStates[k]&&audioElements[k]) audioElements[k].play().catch(e=>{}); }catch(e){} }
+    function save() { localStorage.setItem('vaibik_sound_volumes',JSON.stringify(volumes)); localStorage.setItem('vaibik_sound_active',JSON.stringify(activeStates)); }
+    function updateUI() { let c=document.getElementById('mixerSoundsList'); if(!c) return; c.innerHTML=''; soundsList.forEach(s=>{ let div=document.createElement('div'); div.className='mixer-sound-item'; div.innerHTML=`<span class="mixer-sound-name ${activeStates[s.key]?'active':''}" data-key="${s.key}">${s.name}</span><input type="range" class="mixer-slider" data-key="${s.key}" min="0" max="100" step="1" value="${Math.round(volumes[s.key]*100)}"><span class="mixer-value">${Math.round(volumes[s.key]*100)}%</span>`; c.appendChild(div); }); document.querySelectorAll('.mixer-sound-name').forEach(el=>{ let k=el.dataset.key; el.addEventListener('click',e=>{ e.stopPropagation(); if(activeStates[k]){ audioElements[k].pause(); activeStates[k]=false; el.classList.remove('active'); }else{ audioElements[k].play().catch(e=>{}); activeStates[k]=true; el.classList.add('active'); } save(); updateUI(); }); }); document.querySelectorAll('.mixer-slider').forEach(sl=>{ sl.addEventListener('input',e=>{ let k=sl.dataset.key; let val=parseInt(e.target.value)/100; volumes[k]=val; if(audioElements[k]) audioElements[k].volume=val; sl.nextElementSibling.innerText=e.target.value+'%'; save(); }); }); }
+    function muteAll(){ for(let k in audioElements) if(activeStates[k]){ audioElements[k].pause(); activeStates[k]=false; } save(); updateUI(); }
+    const mixerModal=document.getElementById('mixerModal'); document.getElementById('floatingMixerBtn').addEventListener('click',()=>{ mixerModal.classList.toggle('active'); updateUI(); }); document.getElementById('mixerCloseBtn').addEventListener('click',()=>mixerModal.classList.remove('active')); document.getElementById('muteAllBtn').addEventListener('click',muteAll); load();
+
+    function initTheme(){ let st=localStorage.getItem('vaibik_theme'); let tb=document.getElementById('themeToggle'); if(st==='dark'){ document.body.classList.add('dark'); tb.innerText='светлая тема'; }else{ document.body.classList.remove('dark'); tb.innerText='тёмная тема'; } }
+    function toggleTheme(){ let tb=document.getElementById('themeToggle'); if(document.body.classList.contains('dark')){ document.body.classList.remove('dark'); localStorage.setItem('vaibik_theme','light'); tb.innerText='тёмная тема'; }else{ document.body.classList.add('dark'); localStorage.setItem('vaibik_theme','dark'); tb.innerText='светлая тема'; } }
+    initTheme(); document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+</script>
+</body>
+</html>
